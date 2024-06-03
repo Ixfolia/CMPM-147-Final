@@ -1,47 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Harvest</title>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" type="text/css" href="../css/site.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    <!-- This title is used for tabs and bookmarks -->
+    <title>CMPM 147 Final</title>
+
+    <!-- Use UTF character set, a good idea with any webpage -->
+    <meta charset="UTF-8" />
+    <!-- Set viewport so page remains consistently scaled w narrow devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Include CSS file, including a site-wide CSS and for this particular page -->
+    <link rel="stylesheet" type="text/css" href="../css/site.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <!-- Load jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-	<script type="text/javascript" src="../js/site.js" defer></script>
-	<script type="text/javascript" src="./js/project.js" defer></script>
-	<script type="text/javascript" src="./js/engine.js" defer></script>
-	<script type="text/javascript" src="./js/my_world.js" defer></script>
-	<script type="text/javascript" src="./js/xxhash.min.js" defer></script>
-	<script type="text/javascript">
-		let canvas;
-		const padding = 20;
+    <!-- Load p5.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
 
-		function setup() {
-			createResponsiveCanvas();
-			window.addEventListener('resize', createResponsiveCanvas);
-		}
-
-	</script>
-	<style>
-        /* CSS Style for the background color */
-        body {
-            background-color: #d6e4f1; 
-        }
-    </style>
+    <!-- Link to javascript files - DEFER waits until all elements are rendered -->
+    <script type="text/javascript" src="../js/site.js" DEFER></script>
+    <!-- Use me for a JavaScript OOP Project -->
+    <script type="text/javascript" src="./js/engine.js" DEFER></script>
+    <script type="text/javascript" src="./js/my_world.js" DEFER></script>
+    <script type="text/javascript" src="./js/xxhash.min.js" DEFER></script>
+    <!-- Include p5.js Sound library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
 </head>
 <body>
-	<main id="content">
+    <main id="content">
 		<section>
 			<h1 id="experiment-title">Harvest haven</h1>
 			<div id="subtitle"> build, create, and explore!</div>
 			<div class="minor-section">
 				<div id="canvas-container">
-					<div id="container"></div>
-				</div>
+                    <!-- canvas will be added here -->
+                    <body>
+                        <div id="container">
+                            <div id="box-container" class="modal">
+                                <div class="box">None</div>
+                                <div class="box">House</div>
+                                <div class="box">Upgrade House</div>
+                                <div class="box">Path Tiles</div>
+                                <div class="box">Farm Tiles</div>
+                                <div class="box">Fence | 1x Wood</div>
+                                <div class="box">Stone Paths | 1x Stone</div>
+                                <div class="box">Plant Seeds | 1x Seed</div>
+                                <!-- Add more boxes as needed -->
+                              </div>
+                        </div>
+                        <div id="paragraph-container">
+                            <p>Arrow keys scroll. Clicking changes tiles.</p>
+                          </div>
+                          <div id="canvas-container"></div>
+                    </body>
+                </div>
 				<div class="fullscreen-box">
 					<button id="fullscreen">Fullscreen</button>
 				</div>

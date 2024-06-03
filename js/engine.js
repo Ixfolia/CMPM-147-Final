@@ -25,6 +25,13 @@ let idle_down;
 let idle_left;
 let idle_right;
 let lastPressedKey = 83;
+
+//main menu stuff
+let mainMenu;
+// let startButton;
+// let creditsButton;
+// let loreButton;
+
 // Define a cooldown period in milliseconds
 const cooldownDuration = 100; // .1 second
 
@@ -35,6 +42,7 @@ let cooldownStartTime = 0;
 let obstacles = {};
 
 let startScreen = true;
+let showText = true;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
@@ -106,6 +114,8 @@ function preload() {
   idle_right = loadImage(
     "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
   );
+  
+  mainMenu = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/MainMenuFinal3.png?v=1717386120208");
 }
 
 function setup() {
@@ -213,6 +223,7 @@ function setup() {
   rebuildWorld(input.value());
 
   farmer = new Sprite(walk_down, width / 2, height / 2, 0);
+  
 }
 
 function rebuildWorld(key) {
@@ -242,14 +253,12 @@ function mouseClicked() {
 
 function draw() {
   if (startScreen) {
-    background(0);
-    fill(255);
-    textSize(48);
-    textAlign(CENTER, CENTER);
-    text("Build", width / 2, height / 3);
-    textSize(24);
-    text("Click to Start", width / 2, height / 2);
-  } else {
+    background(mainMenu);
+  }
+  else {
+    setTimeout(() => {
+      showText = false;
+    }, 10000);
     updateGathering();
 
     // Calculate the center of the screen
@@ -508,6 +517,39 @@ function draw() {
       }
     }
 
+    // Display the player's position at the top-left corner of the screen
+    fill(0);
+    textAlign(LEFT, TOP);
+    textSize(16);
+    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
+
+    // gathering text
+    if (gathering && !showText) {
+      fill(0);
+      textAlign(CENTER, TOP);
+      text("Gathering...", width / 2, 20);
+    }
+    
+    // starter text
+    if (showText) {
+      fill(0);
+      textAlign(CENTER, TOP);
+      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 20);
+    }
+
+    // Display resources UI
+    textAlign(LEFT, TOP);
+    textSize(24);
+    let inventory = getResourceInfo();
+    text(`x${inventory[0]}`, width - 50, 15);
+    let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
+    text(`x${inventory[1]}`, width - 50, 55);
+    let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
+    text(`x${inventory[2]}`, width - 50, 95);
+    let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
+
+    textSize(16);
+
     // draw trees and stone (top)
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
@@ -527,6 +569,9 @@ function draw() {
     // strokeWeight(3)
     // rect(player.x - tile_width_step_main / 2, player.y - tile_height_step_main / 2, tile_width_step_main, tile_height_step_main);  // hitbox
 
+    noStroke();
+    noFill();
+
     // draw trees and stone (bot)
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
@@ -536,36 +581,6 @@ function draw() {
         );
       }
     }
-
-    // Display the player's position at the top-left corner of the screen
-    fill(0);
-    textAlign(LEFT, TOP);
-    textSize(16);
-    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
-
-    // gathering text
-    if (gathering) {
-      fill(0);
-      textAlign(CENTER, TOP);
-      text("Gathering...", width / 2, 20);
-      noFill();
-    }
-
-    // Display resources UI
-    textAlign(LEFT, TOP);
-    textSize(24);
-    let inventory = getResourceInfo();
-    text(`x${inventory[0]}`, width - 50, 15);
-    let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
-    text(`x${inventory[1]}`, width - 50, 55);
-    let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
-    text(`x${inventory[2]}`, width - 50, 95);
-    let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
-
-    textSize(16);
-
-    noStroke();
-    noFill();
 
     // Draw rectangles around rocks
     for (let key in rocks) {

@@ -508,32 +508,6 @@ function draw() {
       }
     }
 
-    // Display the player's position at the top-left corner of the screen
-    fill(0);
-    textAlign(LEFT, TOP);
-    textSize(16);
-    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
-
-    // gathering text
-    if (gathering) {
-      fill(0);
-      textAlign(CENTER, TOP);
-      text("Gathering...", width / 2, 20);
-    }
-
-    // Display resources UI
-    textAlign(LEFT, TOP);
-    textSize(24);
-    let inventory = getResourceInfo();
-    text(`x${inventory[0]}`, width - 50, 15);
-    let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
-    text(`x${inventory[1]}`, width - 50, 55);
-    let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
-    text(`x${inventory[2]}`, width - 50, 95);
-    let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
-
-    textSize(16);
-
     // draw trees and stone (top)
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
@@ -553,9 +527,6 @@ function draw() {
     // strokeWeight(3)
     // rect(player.x - tile_width_step_main / 2, player.y - tile_height_step_main / 2, tile_width_step_main, tile_height_step_main);  // hitbox
 
-    noStroke();
-    noFill();
-
     // draw trees and stone (bot)
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
@@ -565,6 +536,36 @@ function draw() {
         );
       }
     }
+
+    // Display the player's position at the top-left corner of the screen
+    fill(0);
+    textAlign(LEFT, TOP);
+    textSize(16);
+    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
+
+    // gathering text
+    if (gathering) {
+      fill(0);
+      textAlign(CENTER, TOP);
+      text("Gathering...", width / 2, 20);
+      noFill();
+    }
+
+    // Display resources UI
+    textAlign(LEFT, TOP);
+    textSize(24);
+    let inventory = getResourceInfo();
+    text(`x${inventory[0]}`, width - 50, 15);
+    let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
+    text(`x${inventory[1]}`, width - 50, 55);
+    let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
+    text(`x${inventory[2]}`, width - 50, 95);
+    let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
+
+    textSize(16);
+
+    noStroke();
+    noFill();
 
     // Draw rectangles around rocks
     for (let key in rocks) {

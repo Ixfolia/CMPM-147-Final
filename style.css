@@ -1,0 +1,41 @@
+/* CSS files add styling rules to your content */
+
+body {
+    font-family: helvetica, arial, sans-serif;
+    margin: 2em;
+  }
+    
+  h1 {
+    font-style: italic;
+    color: #373fff;
+  }
+  
+  #container {
+    display: flex;
+  
+    order: 1;
+    
+  }
+  
+  #canvas-container {
+    flex-grow: 1;
+  }
+  
+  #box-container {
+    width: 200px; /* Adjust as needed */
+    margin-right: 20px;
+    order: 2
+  }
+  
+  .box {
+    border: 1px solid #888;
+    padding: 10px;
+    margin: 10px;
+    width: 180px; /* Adjust to fit within the box-container width */
+  }
+  
+  #paragraph-container {
+    margin-top: 20px;
+  }
+  
+    

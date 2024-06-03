@@ -34,6 +34,7 @@ let cooldownStartTime = 0;
 
 let obstacles = {};
 
+let mainMenu;
 let startScreen = true;
 let showText = true;
 
@@ -554,7 +555,8 @@ function draw() {
     if (showText) {
       fill(0);
       textAlign(CENTER, TOP);
-      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 20);
+      textSize(12);
+      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 35);
     }
 
     // Display resources UI

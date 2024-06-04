@@ -35,11 +35,25 @@ let cooldownStartTime = 0;
 let obstacles = {};
 
 let startScreen = true;
+let upgradeScreen = false;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
 
 let boxes;
+let inventory;
+
+// variables for upgrading house
+let createdUpgradeButtons = false;
+let house1Button;
+let house2Button;
+let house3Button;
+let checkButton;
+let xButton;
+
+let houseKey;
+let houseType = null;
+let houseNotChosen = false;
 
 /////////////////////////////
 // Transforms between coordinate systems
@@ -84,30 +98,14 @@ function preload() {
     window.p3_preload();
   }
 
-  walk_up = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  walk_down = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  walk_left = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  walk_right = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  idle_up = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  idle_down = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  idle_left = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
-  idle_right = loadImage(
-    "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
-  );
+  walk_up = loadImage("./assets/farmer_movement.png");
+  walk_down = loadImage("./assets/farmer_movement.png");
+  walk_left = loadImage("./assets/farmer_movement.png");
+  walk_right = loadImage("./assets/farmer_movement.png");
+  idle_up = loadImage("./assets/farmer_movement.png");
+  idle_down = loadImage("./assets/farmer_movement.png");
+  idle_left = loadImage("./assets/farmer_movement.png");
+  idle_right = loadImage("./assets/farmer_movement.png");
 }
 
 function setup() {
@@ -217,6 +215,8 @@ function setup() {
   rebuildWorld(input.value());
 
   farmer = new Sprite(walk_down, width / 2, height / 2, 0);
+
+  strokeWeight(1);
 }
 
 function rebuildWorld(key) {
@@ -253,6 +253,7 @@ function draw() {
     text("Build", width / 2, height / 3);
     textSize(24);
     text("Click to Start", width / 2, height / 2);
+    textSize(16);
   } else {
     updateGathering();
 
@@ -543,30 +544,24 @@ function draw() {
 
     // Display the player's position at the top-left corner of the screen
     fill(0);
-    textAlign(LEFT, TOP);
-    textSize(16);
-    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
+    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 70, 30);
 
-    // gathering text
-    if (gathering) {
-      fill(0);
-      textAlign(CENTER, TOP);
-      text("Gathering...", width / 2, 20);
-      noFill();
-    }
+    // // gathering text
+    // if (gathering) {
+    //   fill(0);
+    //   text("Gathering...", width / 2, 20);
+    //   noFill();
+    // }
 
     // Display resources UI
-    textAlign(LEFT, TOP);
     textSize(24);
-    let inventory = getResourceInfo();
-    text(`x${inventory[0]}`, width - 50, 15);
+    inventory = getResourceInfo();
+    text(`x${inventory[0]}`, width - 30, 25);
     let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
-    text(`x${inventory[1]}`, width - 50, 55);
+    text(`x${inventory[1]}`, width - 30, 65);
     let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
-    text(`x${inventory[2]}`, width - 50, 95);
+    text(`x${inventory[2]}`, width - 30, 105);
     let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
-
-    textSize(16);
 
     noStroke();
     noFill();
@@ -711,6 +706,92 @@ function draw() {
     //   window.p3_drawAfter();
     // }
   }
+
+  // upgrade Screen
+  if (upgradeScreen) {
+    stroke(0, 0, 0);
+    fill ("#AEAEAE");
+    beginShape();
+    translate(width/8, height/8); // Center the tile around the cursor
+    vertex(0, 0); // Top-left corner
+    vertex(width - width/4, 0); // Top-right corner
+    vertex(width - width/4, height - height/4); // Bottom-right corner
+    vertex(0, height - height/4); // Bottom-left corner
+    endShape(CLOSE);
+
+    fill (0);
+    text("Cost: 10x Wood   10x Stone", width / 4, height / 12);
+    if (inventory[0] < 15 && inventory[1] < 15) {
+      fill(216, 0, 0);
+      stroke(216, 0, 0);
+      textSize(12);
+      text("Not Enough Resources!", width/2 + width / 8, height/2 + height / 10);
+      textSize(24);
+      fill(0);
+      stroke(0);
+    }
+    else if (houseNotChosen) {
+      fill(216, 0, 0);
+      stroke(216, 0, 0);
+      textSize(12);
+      text("Choose a House!", width/2 + width / 7, height/2 + height / 10);
+      textSize(24);
+      fill(0);
+      stroke(0);
+    }
+
+    if (houseType === 1) {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/4 + 16, height/4 - 32); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(128 + 32, 0); // Top-right corner
+      vertex(128 + 32, 128 + 32); // Bottom-right corner
+      vertex(0, 128 + 32); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+    }
+
+    else if (houseType === 2) {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/4 + 16 - width/4, height/4 - 32); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(128 + 32, 0); // Top-right corner
+      vertex(128 + 32, 128 + 32); // Bottom-right corner
+      vertex(0, 128 + 32); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+    }
+
+    else if (houseType === 3) {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/4 + 16 + width/4, height/4 - 32); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(128 + 32, 0); // Top-right corner
+      vertex(128 + 32, 128 + 32); // Bottom-right corner
+      vertex(0, 128 + 32); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+    }
+    else {
+      beginShape();
+      noFill();
+      vertex(0, 0); // Top-left corner
+      endShape(CLOSE);
+    }
+
+    noStroke();
+    noFill();
+
+    if (!createdUpgradeButtons){
+      createUpgradeButtons();
+    }
+  }
 }
 
 function removeObstacle(key) {
@@ -813,4 +894,56 @@ function Sprite(sheet, x, y, row) {
 
 function resetAction() {
   boxes[0].click();
+}
+
+function upgradeHouseUI(key) {
+  upgradeScreen = true;
+  houseKey = key;
+}
+
+function createUpgradeButtons() {
+  createdUpgradeButtons = true;
+
+  house1Button = createImg("./assets/buttons/house1.png", "house1 Button");
+  house1Button.position(width/2 - 32, height - height/4);
+  house1Button.mouseClicked(() => houseType = 1);
+  house2Button = createImg("./assets/buttons/house2.png", "house2 Button");
+  house2Button.position(width/2 - 32 + width/4, height - height/4);
+  house2Button.mouseClicked(() => houseType = 3);
+  house3Button = createImg("./assets/buttons/house3.png", "house3 Button");
+  house3Button.position(width/2 - 32 - width/4, height - height/4);
+  house3Button.mouseClicked(() => houseType = 2);
+  checkButton = createImg("./assets/buttons/check.png", "check Button");
+  checkButton.position(width/2 + width/4, height + height/6);
+  checkButton.size(36, 36)
+  checkButton.mouseClicked(() => {
+    if (houseType != null && inventory[0] >= 15 && inventory[1] >= 15) {
+      upgradeScreen = false;
+      checkButton.remove();
+      xButton.remove();
+      house1Button.remove();
+      house2Button.remove();
+      house3Button.remove();
+      createdUpgradeButtons = false;
+      setHouseType(houseKey, houseType);
+      houseType = null;
+      houseNotChosen = false;
+      subtractHouseUpgradePayment();
+    }
+    else {
+      houseNotChosen = true;
+    }
+  });
+  xButton = createImg("./assets/buttons/x.png", "x Button");
+  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.mouseClicked(() => {
+    upgradeScreen = false;
+    checkButton.remove();
+    xButton.remove();
+    house1Button.remove();
+    house2Button.remove();
+    house3Button.remove();
+    createdUpgradeButtons = false;
+    houseType = null;
+  });
 }

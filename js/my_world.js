@@ -39,11 +39,11 @@ let notePattern3 = [];
 let intervalInSeconds = 0.9;
 
 function p3_preload() {
-  biomeTilesheet = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/biomes.png?v=1717365582951");
-  resourceTilesheet = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/resources.png?v=1717311481532");
-  overworldResourcesTilesheet = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/overworld_resources.png?v=1716787355069")
-  housesTilesheet = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/houses.png?v=1717005572099")
-  cropTilesheet = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/crops.png?v=1717369137022");
+  biomeTilesheet = loadImage("./assets/biomes.png");
+  resourceTilesheet = loadImage("./assets/resources.png");
+  overworldResourcesTilesheet = loadImage("./assets/overworld_resources.png")
+  housesTilesheet = loadImage("./assets/houses.png")
+  cropTilesheet = loadImage("./assets/crops.png");
 }
 
 function p3_setup() {
@@ -84,8 +84,8 @@ let cropTilesheet;
 let startMillis = 0;
 let gathering = false;
 const gatheringDuration = 1500; // 5 seconds in milliseconds
-let wood = 10;
-let stone = 10;
+let wood = 20;
+let stone = 20;
 let seeds = 10;
 let rocks = {}; // Object to track tiles with rocks
 let trees = {}; // Object to track tiles with trees
@@ -119,8 +119,8 @@ function p3_worldKeyChanged(key) {
   
   startMillis = 0;
   gathering = false;
-  wood = 10;
-  stone = 10;
+  wood = 20;
+  stone = 20;
   seeds = 10;
   rocks = {}; // Object to track tiles with rocks
   trees = {}; // Object to track tiles with trees
@@ -558,6 +558,10 @@ function click(key) {
         for (let j0 = -3; j0 < 4; j0++) {
           houses[[key[0] + i0, key[1] - j0]] = false;
           housesPosition[[key[0] + i0, key[1] - j0]] = false;
+          if (housesType[[key[0] + i0, key[1] - j0]] > 0) {
+            wood += 15;
+            stone += 15;
+          }
           housesType[[key[0] + i0, key[1] - j0]] = -1;
           removeObstacle([key[0] + i0, key[1] - j0]);
         }
@@ -571,8 +575,12 @@ function click(key) {
       for (let i0 = -3; i0 < 4; i0++) {
         for (let j0 = -3; j0 < 4; j0++) {
           if(housesPosition[[key[0] + i0, key[1] - j0]]){
-            housesType[[key[0] + i0, key[1] - j0]]++;
-            housesType[[key[0] + i0, key[1] - j0]] = housesType[[key[0] + i0, key[1] - j0]] % 4;
+            if(housesType[[key[0] + i0, key[1] - j0]] === 0) {
+              let newKey = [key[0] + i0, key[1] - j0];
+              // housesType[[key[0] + i0, key[1] - j0]]++;
+              // housesType[[key[0] + i0, key[1] - j0]] = housesType[[key[0] + i0, key[1] - j0]] % 4;
+              upgradeHouseUI(newKey);
+            }
           }
         }
       }
@@ -675,118 +683,140 @@ function p3_drawTile(i, j) {
 
 
 function p3_drawSelectedTile(i, j) {
-    // Calculate the player's neighboring tile positions
-    let playerX = playerPosition[0];
-    let playerY = playerPosition[1];
-    let adjacentTiles = [
-      [playerX, playerY],           // Player's current tile
-      // Radius 1
-      [playerX + 1, playerY],       // Right
-      [playerX + 1, playerY + 1],   // Bottom-right
-      [playerX, playerY + 1],       // Bottom
-      [playerX - 1, playerY + 1],   // Bottom-left
-      [playerX - 1, playerY],       // Left
-      [playerX - 1, playerY - 1],   // Top-left
-      [playerX, playerY - 1],       // Top
-      [playerX + 1, playerY - 1],   // Top-right
-      // Radius 2
-      [playerX + 2, playerY],       // Right (2 tiles away)
-      [playerX + 2, playerY + 1],
-      [playerX + 2, playerY + 2],
-      [playerX + 1, playerY + 2],   // Bottom-right (2 tiles away)
-      [playerX, playerY + 2],       // Bottom (2 tiles away)
-      [playerX - 1, playerY + 2],
-      [playerX - 2, playerY + 2],
-      [playerX - 2, playerY + 1],   // Bottom-left (2 tiles away)
-      [playerX - 2, playerY],       // Left (2 tiles away)
-      [playerX - 2, playerY - 1],
-      [playerX - 2, playerY - 2],
-      [playerX - 1, playerY - 2],   // Top-left (2 tiles away)
-      [playerX, playerY - 2],       // Top (2 tiles away)
-      [playerX + 1, playerY - 2],
-      [playerX + 2, playerY - 2],
-      [playerX + 2, playerY - 1]    // Top-right (2 tiles away)
-    ];
-  
-    // Check if the clicked tile is within the adjacent tiles
-    let isAdjacent = adjacentTiles.some(tile => tile[0] === i && tile[1] === j);
-  
-    if (!isAdjacent) {
-      stroke(139, 0, 0, 128);
-      fill (216, 0, 0, 64);
-    }
-    else {
-      stroke(0, 139, 0, 128);
-      fill (0, 216, 0, 64);
+  let key = [i, j]
+  // Calculate the player's neighboring tile positions
+  let playerX = playerPosition[0];
+  let playerY = playerPosition[1];
+  let adjacentTiles = [
+    [playerX, playerY],           // Player's current tile
+    // Radius 1
+    [playerX + 1, playerY],       // Right
+    [playerX + 1, playerY + 1],   // Bottom-right
+    [playerX, playerY + 1],       // Bottom
+    [playerX - 1, playerY + 1],   // Bottom-left
+    [playerX - 1, playerY],       // Left
+    [playerX - 1, playerY - 1],   // Top-left
+    [playerX, playerY - 1],       // Top
+    [playerX + 1, playerY - 1],   // Top-right
+    // Radius 2
+    [playerX + 2, playerY],       // Right (2 tiles away)
+    [playerX + 2, playerY + 1],
+    [playerX + 2, playerY + 2],
+    [playerX + 1, playerY + 2],   // Bottom-right (2 tiles away)
+    [playerX, playerY + 2],       // Bottom (2 tiles away)
+    [playerX - 1, playerY + 2],
+    [playerX - 2, playerY + 2],
+    [playerX - 2, playerY + 1],   // Bottom-left (2 tiles away)
+    [playerX - 2, playerY],       // Left (2 tiles away)
+    [playerX - 2, playerY - 1],
+    [playerX - 2, playerY - 2],
+    [playerX - 1, playerY - 2],   // Top-left (2 tiles away)
+    [playerX, playerY - 2],       // Top (2 tiles away)
+    [playerX + 1, playerY - 2],
+    [playerX + 2, playerY - 2],
+    [playerX + 2, playerY - 1]    // Top-right (2 tiles away)
+  ];
+
+  // Check if the clicked tile is within the adjacent tiles
+  let isAdjacent = adjacentTiles.some(tile => tile[0] === i && tile[1] === j);
+
+  if (!isAdjacent) {
+    stroke(139, 0, 0, 128);
+    fill (216, 0, 0, 64);
+  }
+  else {
+    stroke(0, 139, 0, 128);
+    fill (0, 216, 0, 64);
+  }
+
+  // draw outline of house
+  if (placingHouse) {
+    let canPlaceHouse = true;
+    if (!housesPosition[key] && !houses[key]) {
+      if (placingHouse) {
+          for (let xOffset = -4; xOffset < 8; xOffset++) {
+              for (let yOffset = -4; yOffset < 8; yOffset++) {
+                  const adjacentKey = [key[0] + xOffset, key[1] - yOffset]; // Assuming y-axis increases downwards
+                  if (houses[adjacentKey] || rocks[adjacentKey] || trees[adjacentKey] || deadtrees[adjacentKey] || water[adjacentKey]) {   
+                      // If any adjacent cell contains one of the objects, we can't place the house
+                      canPlaceHouse = false;
+                      break; // No need to check further, exit the loop
+                  }
+              }
+              if (!canPlaceHouse) {
+                  break; // No need to check further, exit the loop
+              }
+          }
+          if (canPlaceHouse) {
+            stroke(0, 139, 0, 128);
+            fill (0, 216, 0, 64);
+          } else {
+            stroke(139, 0, 0, 128);
+            fill (216, 0, 0, 64);
+          }
+      }
     }
 
-    if (placingHouse) {
-      let key = [i, j]
-      let canPlaceHouse = true;
-      if (!housesPosition[key] && !houses[key]) {
-        if (placingHouse) {
-            for (let xOffset = -4; xOffset < 8; xOffset++) {
-                for (let yOffset = -4; yOffset < 8; yOffset++) {
-                    const adjacentKey = [key[0] + xOffset, key[1] - yOffset]; // Assuming y-axis increases downwards
-                    if (houses[adjacentKey] || rocks[adjacentKey] || trees[adjacentKey] || deadtrees[adjacentKey] || water[adjacentKey]) {   
-                        // If any adjacent cell contains one of the objects, we can't place the house
-                        canPlaceHouse = false;
-                        break; // No need to check further, exit the loop
-                    }
-                }
-                if (!canPlaceHouse) {
-                    break; // No need to check further, exit the loop
-                }
-            }
-            if (canPlaceHouse) {
-              stroke(0, 139, 0, 128);
-              fill (0, 216, 0, 64);
-            } else {
-              stroke(139, 0, 0, 128);
-              fill (216, 0, 0, 64);
-            }
+    beginShape();
+    translate(-tw * 4, th * 5); // Center the tile around the cursor
+    vertex(0, 0); // Bottom-left corner
+    vertex(tw * 12, 0); // Bottom-right corner
+    vertex(tw * 12, -th * 12); // Top-right corner
+    vertex(0, -th * 12); // Top-left corner
+    endShape(CLOSE);
+
+    beginShape();
+    translate(tw * 4, -th * 4); // Center the tile around the cursor
+    vertex(0, 0); // Bottom-left corner
+    vertex(tw * 4, 0); // Bottom-right corner
+    vertex(tw * 4, -th * 4); // Top-right corner
+    vertex(0, -th * 4); // Top-left corner
+    endShape(CLOSE);
+
+    if (!canPlaceHouse && isAdjacent) {
+      stroke(0, 0, 0);
+      fill(0, 0, 0);
+      textSize(16);
+      text("Too Close To Other Objects", tw * 2, th); // Center the text within the tile
+      textSize(24);
+    }
+
+    if (!isAdjacent) {
+      stroke(0, 0, 0);
+      fill(0, 0, 0);
+      textSize(16);
+      text("Too Far From Player", tw * 2, th); // Center the text within the tile
+      textSize(24);
+    }
+  }
+
+  // draw tile normally
+  else {
+    beginShape();
+    translate(0, 0); // Center the tile around the cursor
+    vertex(0, 0); // Top-left corner
+    vertex(tw, 0); // Top-right corner
+    vertex(tw, th); // Bottom-right corner
+    vertex(0, th); // Bottom-left corner
+    endShape(CLOSE);
+  }
+
+  if (upgradeHouse) {
+    for (let i0 = -3; i0 < 4; i0++) {
+      for (let j0 = -3; j0 < 4; j0++) {
+        if(housesPosition[[key[0] + i0, key[1] - j0]]){
+          if(housesType[[key[0] + i0, key[1] - j0]] > 0) {
+            stroke(0, 0, 0);
+            fill(0, 0, 0);
+            textSize(16);
+            text("Cant Upgrade Further", tw * 2, th); // Center the text within the tile
+            textSize(24);
+          }
         }
       }
-
-      beginShape();
-      translate(-tw * 4, th * 5); // Center the tile around the cursor
-      vertex(0, 0); // Bottom-left corner
-      vertex(tw * 12, 0); // Bottom-right corner
-      vertex(tw * 12, -th * 12); // Top-right corner
-      vertex(0, -th * 12); // Top-left corner
-      endShape(CLOSE);
-
-      beginShape();
-      translate(tw * 4, -th * 4); // Center the tile around the cursor
-      vertex(0, 0); // Bottom-left corner
-      vertex(tw * 4, 0); // Bottom-right corner
-      vertex(tw * 4, -th * 4); // Top-right corner
-      vertex(0, -th * 4); // Top-left corner
-      endShape(CLOSE);
-
-      if (!canPlaceHouse) {
-        stroke(0, 0, 0);
-        fill(0, 0, 0);
-        textAlign(CENTER, CENTER);
-        text("Too Close To Other Objects", tw * 2, th); // Center the text within the tile
-      }
-
-      if (!isAdjacent) {
-        stroke(0, 0, 0);
-        fill(0, 0, 0);
-        textAlign(CENTER, CENTER);
-        text("Too Far From Player", tw * 2, th); // Center the text within the tile
-      }
     }
-    else {
-      beginShape();
-      translate(0, 0); // Center the tile around the cursor
-      vertex(0, 0); // Top-left corner
-      vertex(tw, 0); // Top-right corner
-      vertex(tw, th); // Bottom-right corner
-      vertex(0, th); // Bottom-left corner
-      endShape(CLOSE);
-    }
+  }
+
   noFill();
   noStroke();
   // fill(0);
@@ -1457,6 +1487,15 @@ function growCrops() {
       }
     }
   }
+}
+
+function setHouseType(key, type) {
+  housesType[[key[0], key[1]]] = type;
+}
+
+function subtractHouseUpgradePayment() {
+  wood -= 15;
+  stone -= 15;
 }
 
 function action(newState) {

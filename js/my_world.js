@@ -412,7 +412,7 @@ function click(key) {
   // clicked fence
   if (!fences[key] && wood > 0) {
       if (placingFence) {
-        if (!houses[key] && !rocks[key] && !trees[key] && !deadtrees[key] && !water[key] && !stonePaths[key]) {
+        if (!houses[key] && !rocks[key] && !trees[key] && !deadtrees[key] && !water[key] && !stonePaths[key] && !crop[key]) {
           fences[key] = true;
           wood--;
         }
@@ -457,7 +457,7 @@ function click(key) {
   } 
   
   // clicked farm tile + planting seed
-  if (farmTiles[key] && (crop[key] === undefined || crop[key] === null || crop[key] === false) && !stonePaths[key]) {
+  if (farmTiles[key] && (crop[key] === undefined || crop[key] === null || crop[key] === false) && !stonePaths[key] && !fences[key]) {
     if (planting && seeds > 0) {
       let num = floor(random(12)); // randomize based on random
       // let num = XXH.h32("tile:" + key, worldSeed) % 4; // randomize based on hash

@@ -34,12 +34,12 @@ let cooldownStartTime = 0;
 
 let obstacles = {};
 
-let mainMenu;
 let startScreen = true;
-let showText = true;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
+
+let boxes;
 
 /////////////////////////////
 // Transforms between coordinate systems
@@ -108,7 +108,6 @@ function preload() {
   idle_right = loadImage(
     "https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/farmer_movement.png?v=1717005564987"
   );
-  mainMenu = loadImage("https://cdn.glitch.global/89835fff-f6de-48e0-bb2e-674d0cfb96b8/MainMenuFinal3.png?v=1717386120208");
 }
 
 function setup() {
@@ -161,7 +160,7 @@ function setup() {
   //   select.changed(selectionChanged);
 
   // Get all the boxes
-  let boxes = document.getElementsByClassName("box");
+  boxes = document.getElementsByClassName("box");
 
   // Tracking last clicked box
   let lastClickedBox = null;
@@ -202,6 +201,8 @@ function setup() {
       action(newState);
     });
   }
+
+  // resetAction();
 
   let label = createP();
   label.html("World key: ");
@@ -245,11 +246,14 @@ function mouseClicked() {
 
 function draw() {
   if (startScreen) {
-    background(mainMenu);
+    background(0);
+    fill(255);
+    textSize(48);
+    textAlign(CENTER, CENTER);
+    text("Build", width / 2, height / 3);
+    textSize(24);
+    text("Click to Start", width / 2, height / 2);
   } else {
-    setTimeout(() => {
-      showText = false;
-    }, 10000);
     updateGathering();
 
     // Calculate the center of the screen
@@ -544,19 +548,11 @@ function draw() {
     text(`(${playerPosition[0]}, ${playerPosition[1]})`, 10, 10);
 
     // gathering text
-    if (gathering && !showText) {
+    if (gathering) {
       fill(0);
       textAlign(CENTER, TOP);
       text("Gathering...", width / 2, 20);
       noFill();
-    }
-    
-    // starter lore text
-    if (showText) {
-      fill(0);
-      textAlign(CENTER, TOP);
-      textSize(12);
-      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 35);
     }
 
     // Display resources UI
@@ -813,4 +809,8 @@ function Sprite(sheet, x, y, row) {
       this.frame = 0;
     }
   };
+}
+
+function resetAction() {
+  boxes[0].click();
 }

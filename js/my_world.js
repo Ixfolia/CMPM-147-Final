@@ -545,11 +545,10 @@ function click(key) {
             }
         }
         if (canPlaceHouse) {
-            console.log('Can place house');
             housesPosition[key] = true;
             housesType[key] = 0;
-        } else {
-            console.log('Too Close to Another Object');
+            placingHouse = false;
+            resetAction();
         }
     }
   }
@@ -577,6 +576,8 @@ function click(key) {
           }
         }
       }
+      upgradeHouse = false;
+      resetAction();
     }
   }
 }
@@ -712,22 +713,81 @@ function p3_drawSelectedTile(i, j) {
   
     if (!isAdjacent) {
       stroke(139, 0, 0, 128);
-      fill (216, 0, 0, 128)
+      fill (216, 0, 0, 64);
     }
     else {
       stroke(0, 139, 0, 128);
-      fill (0, 216, 0, 128)
+      fill (0, 216, 0, 64);
     }
 
-  beginShape();
-  translate(0, 0); // Center the tile around the cursor
-  vertex(0, 0); // Top-left corner
-  vertex(tw, 0); // Top-right corner
-  vertex(tw, th); // Bottom-right corner
-  vertex(0, th); // Bottom-left corner
-  endShape(CLOSE);
-  noFill();
+    if (placingHouse) {
+      let key = [i, j]
+      let canPlaceHouse = true;
+      if (!housesPosition[key] && !houses[key]) {
+        if (placingHouse) {
+            for (let xOffset = -4; xOffset < 8; xOffset++) {
+                for (let yOffset = -4; yOffset < 8; yOffset++) {
+                    const adjacentKey = [key[0] + xOffset, key[1] - yOffset]; // Assuming y-axis increases downwards
+                    if (houses[adjacentKey] || rocks[adjacentKey] || trees[adjacentKey] || deadtrees[adjacentKey] || water[adjacentKey]) {   
+                        // If any adjacent cell contains one of the objects, we can't place the house
+                        canPlaceHouse = false;
+                        break; // No need to check further, exit the loop
+                    }
+                }
+                if (!canPlaceHouse) {
+                    break; // No need to check further, exit the loop
+                }
+            }
+            if (canPlaceHouse) {
+              stroke(0, 139, 0, 128);
+              fill (0, 216, 0, 64);
+            } else {
+              stroke(139, 0, 0, 128);
+              fill (216, 0, 0, 64);
+            }
+        }
+      }
 
+      beginShape();
+      translate(-tw * 4, th * 5); // Center the tile around the cursor
+      vertex(0, 0); // Bottom-left corner
+      vertex(tw * 12, 0); // Bottom-right corner
+      vertex(tw * 12, -th * 12); // Top-right corner
+      vertex(0, -th * 12); // Top-left corner
+      endShape(CLOSE);
+
+      beginShape();
+      translate(tw * 4, -th * 4); // Center the tile around the cursor
+      vertex(0, 0); // Bottom-left corner
+      vertex(tw * 4, 0); // Bottom-right corner
+      vertex(tw * 4, -th * 4); // Top-right corner
+      vertex(0, -th * 4); // Top-left corner
+      endShape(CLOSE);
+
+      if (!canPlaceHouse) {
+        stroke(0, 0, 0);
+        fill(0, 0, 0);
+        textAlign(CENTER, CENTER);
+        text("Too Close To Other Objects", tw * 2, th); // Center the text within the tile
+      }
+
+      if (!isAdjacent) {
+        stroke(0, 0, 0);
+        fill(0, 0, 0);
+        textAlign(CENTER, CENTER);
+        text("Too Far From Player", tw * 2, th); // Center the text within the tile
+      }
+    }
+    else {
+      beginShape();
+      translate(0, 0); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(tw, 0); // Top-right corner
+      vertex(tw, th); // Bottom-right corner
+      vertex(0, th); // Bottom-left corner
+      endShape(CLOSE);
+    }
+  noFill();
   noStroke();
   // fill(0);
   // textAlign(CENTER, CENTER);

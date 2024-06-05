@@ -32,7 +32,7 @@ let osc2;
 let osc3;
 let osc4;
 let amp1 = 0.01;
-let amp2 = 0.1;
+let amp2 = 0.02;
 let amp3 = 0.05;
 let amp4 = 0.05;
 
@@ -209,7 +209,7 @@ function createPatterns(){
     
     for (let j = 0; j < 4; j++){
       notePattern1.push(melodyNotes[j]);
-      notePattern2.push(melodyNotes[j%3]-36);
+      notePattern2.push(melodyNotes[j]-12);
       notePattern3.push(chord - 24);
     }
   }
@@ -219,10 +219,9 @@ function createPatterns(){
 function getMelodyNotes(chordRoot, times) {
   let notes = [];
   // Choose melody notes based on the chord
-  // For simplicity, let's just go up a major scale starting from the chord root
-  let scale = [-5, -3, 0, 2, 4, 7, 9, 12, 14, -chordRoot*2];
+  let scale = [-5, -3, 0, 0, 2, 2, 4, 4, 7, 7, 9, 12, -chordRoot*2];
   for (let i = 0; i < 4; i++) {
-    let index = XXH.h32(i * worldSeed * 99999 % 89+ times*230%2, i * worldSeed * 2423 + times%2) % scale.length;
+    let index = XXH.h32(i * worldSeed * 99 % 89+ times*230%2, i + 232 * worldSeed * 223 + times%2) % scale.length;
     notes.push(chordRoot + scale[index]);
   }
   return notes;
@@ -622,6 +621,21 @@ function p3_drawTile(i, j) {
   let biomeType = getBiomeType(i, j);
   let row = 0;
   let col = 0;
+
+  let currentBiome = getBiomeType(playerPosition[0], [playerPosition[1]])
+  if(currentBiome == "grassland"){
+    osc1.amp(amp1, 0.1)
+    reverb.drywet(0.3)
+  }else if(currentBiome == "desert"){
+    osc1.amp(0, 0.1)
+    reverb.drywet(0)
+  }else if(currentBiome == "mountain"){
+    osc1.amp(amp1, 0.1)
+    reverb.drywet(1)
+  }else {
+    osc1.amp(amp1, 0.1)
+    reverb.drywet(0.5)
+  }
 
   if (XXH.h32("tile:" + [i, j], worldSeed) % 21 == 0) {
     col = 1;

@@ -20,12 +20,21 @@
 */
 
 // global variables for sound
+let t1 = 0.1; // attack time in seconds
+let l1 = 0.7; // attack level 0.0 to 1.0
+let t2 = 0.3; // decay time in seconds
+let l2 = 0.1; // decay level  0.0 to 1.0
+let reverb;
+let env;
+let delay;
 let osc1;
 let osc2;
 let osc3;
+let osc4;
 let amp1 = 0.01;
 let amp2 = 0.1;
 let amp3 = 0.05;
+let amp4 = 0.05;
 
 let soundLoop;
 //let notePattern1 = [62, 66, 69, 74, 67, 71, 64, 64, 69, 73, 76, 81, 66, 69, 74, 73, 67, 71, 74, 79, 69, 73, 76, 81, 71, 74, 78, 81, 73, 76, 79, 81];
@@ -47,11 +56,19 @@ function p3_preload() {
 }
 
 function p3_setup() {
+  reverb = new p5.Reverb()
+  env = new p5.Envelope(t1, amp4, 1.5, amp4/2);
+  delay = new p5.Delay();
+
+
   // lead
   osc1 = new p5.Oscillator('square')
   osc1.freq(0)
   osc1.amp(amp1)
   osc1.start()
+  
+  reverb.process(osc1)
+  reverb.drywet(0.5)
   
   // pad
   osc2 = new p5.Oscillator('sine')
@@ -64,6 +81,12 @@ function p3_setup() {
   osc3.freq(0)
   osc3.amp(amp3)
   osc3.start()
+
+  // gathering sfx
+  osc4 = new p5.Oscillator('sawtooth')
+  osc4.amp(amp4)
+  osc4.freq(0)
+  delay.process(osc4, 0.25, 0.7, 1800);
   
   createPatterns()
   soundLoop = new p5.SoundLoop(onSoundLoop, intervalInSeconds);
@@ -197,7 +220,7 @@ function getMelodyNotes(chordRoot, times) {
   let notes = [];
   // Choose melody notes based on the chord
   // For simplicity, let's just go up a major scale starting from the chord root
-  let scale = [-5, -3, 0, 2, 4, 7, 9, 12, 14];
+  let scale = [-5, -3, 0, 2, 4, 7, 9, 12, 14, -chordRoot*2];
   for (let i = 0; i < 4; i++) {
     let index = XXH.h32(i * worldSeed * 99999 % 89+ times*230%2, i * worldSeed * 2423 + times%2) % scale.length;
     notes.push(chordRoot + scale[index]);
@@ -249,15 +272,16 @@ function playSynth() {
 function onSoundLoop(timeFromNow) {
   let noteIndex1 = (soundLoop.iterations - 1) % notePattern1.length;
   let note1 = midiToFreq(notePattern1[noteIndex1]);
-  osc1.freq(note1, 0.01)
-  
+  osc1.freq(note1)
+
   let noteIndex2 = (soundLoop.iterations - 1) % notePattern2.length;
   let note2 = midiToFreq(notePattern2[noteIndex2]);
-  osc2.freq(note2, 0.01)
+  osc2.freq(note2)
   
   let noteIndex3 = (soundLoop.iterations - 1) % notePattern3.length;
   let note3 = midiToFreq(notePattern3[noteIndex3]);
-  osc3.freq(note3, 0.01)
+  osc3.freq(note3)
+  osc4.freq(note3 * 2)
 }
 
 function p3_tileWidth() {
@@ -1412,6 +1436,8 @@ function getResourceInfo() {
 function startGathering() {
   startMillis = millis();
   gathering = true;
+  osc4.start();
+  env.play(osc4)
 }
 
 function updateGathering() {

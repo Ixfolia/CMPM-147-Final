@@ -19,6 +19,9 @@
     updateGathering
 */
 
+// noise smoothness
+let smoothness = 0.025
+
 // global variables for sound
 let t1 = 0.1; // attack time in seconds
 let l1 = 0.7; // attack level 0.0 to 1.0
@@ -622,19 +625,25 @@ function p3_drawTile(i, j) {
   let row = 0;
   let col = 0;
 
+  let transitionTime = .5;
+
   let currentBiome = getBiomeType(playerPosition[0], [playerPosition[1]])
   if(currentBiome == "grassland"){
-    osc1.amp(amp1, 0.1)
+    osc1.amp(amp1, transitionTime)
     reverb.drywet(0.3)
+    osc3.amp(amp3, transitionTime)
   }else if(currentBiome == "desert"){
-    osc1.amp(0, 0.1)
+    osc1.amp(0, transitionTime)
     reverb.drywet(0)
+    osc3.amp(amp3*2, transitionTime)
   }else if(currentBiome == "mountain"){
-    osc1.amp(amp1, 0.1)
+    osc1.amp(amp1, transitionTime)
     reverb.drywet(1)
+    osc3.amp(0, transitionTime)
   }else {
-    osc1.amp(amp1, 0.1)
+    osc1.amp(amp1, transitionTime)
     reverb.drywet(0.5)
+    osc3.amp(amp3, transitionTime)
   }
 
   if (XXH.h32("tile:" + [i, j], worldSeed) % 21 == 0) {
@@ -1355,7 +1364,7 @@ function applyFenceAutotiling(i, j) {
 }
 
 function getBiomeType(i, j) {
-  let noiseVal = noise(i * 0.05, j * 0.05);
+  let noiseVal = noise(i * smoothness, j * smoothness);
   if (farmTiles[[i, j]]) {
     return "farmTile";
   } else if (pathTiles[[i, j]]) {
@@ -1363,9 +1372,9 @@ function getBiomeType(i, j) {
   } else if (noiseVal < 0.2) {
     return "water";
   } else if (noiseVal < 0.4) {
-    return "desert";;
-  } else if (noiseVal < 0.6) {
     return "grassland";
+  } else if (noiseVal < 0.6) {
+    return "desert";
   } else if (noiseVal < 0.8) {
     return "mountain";
   } else {

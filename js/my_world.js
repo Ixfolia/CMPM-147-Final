@@ -116,6 +116,7 @@ let seeds = 10;
 let rocks = {}; // Object to track tiles with rocks
 let trees = {}; // Object to track tiles with trees
 let deadtrees = {}; // Object to track tiles with trees
+let weeds = {}; // Object to track tiles with weeds
 let houses = {};
 let rockPosition = {};
 let treePosition = {};
@@ -151,6 +152,7 @@ function p3_worldKeyChanged(key) {
   rocks = {}; // Object to track tiles with rocks
   trees = {}; // Object to track tiles with trees
   deadtrees = {}; // Object to track tiles with trees
+  weeds = {}; // Object to track tiles with weeds
   houses = {};
   rockPosition = {};
   treePosition = {};
@@ -366,9 +368,18 @@ function p3_tileClicked(i, j) {
     }
   });
 
+  // Check if the player is next to any weed tiles
+  let playerNextToWeed = null;
+  adjacentTiles.some(tile => {
+    if (weeds[tile]) {
+      playerNextToWeed = tile;
+      return true; // Stop iteration once a weed is found
+    }
+  });
+
   let actionTaken = false;
   // Check if the player is next to a rock or tree
-  if ((playerNextToRock || playerNextToTree || playerNextToDeadTree) && !actionTaken) {
+  if ((playerNextToRock || playerNextToTree || playerNextToDeadTree || playerNextToWeed) && !actionTaken) {
     // Check if the clicked tile or any of its adjacent tiles are rocks
     if (playerNextToRock && adjacentTiles.some(tile => rockPosition[tile] && tile[0] >= i - 1 && tile[0] <= i && tile[1] >= j - 1 && tile[1] <= j)) {
       // If it's a rock, perform your action (increment stone count, remove image, etc.)
@@ -379,6 +390,7 @@ function p3_tileClicked(i, j) {
           if (rocks[[x, y]]) {
             rocks[[x, y]] = false;
             rockPosition[[x, y]] = false;
+            console.log(rocks)
             removeObstacle([x,y]);
           }
         }
@@ -420,6 +432,18 @@ function p3_tileClicked(i, j) {
       }
       startGathering();
       actionTaken = true;
+    }
+
+    // Check if the clicked tile or any of its adjacent tiles are weeds
+    if (playerNextToWeed && adjacentTiles.some(tile => weeds[tile] && tile[0] >= i - 1 && tile[0] <= i && tile[1] >= j - 1 && tile[1] <= j)) {
+      // If it's a weed, perform your action (increment stone count, remove image, etc.)
+      // Reset the weed status for the clicked tile and its adjacent tiles
+          if (weeds[[i, j]]) {
+            seeds++;
+            weeds[[i, j]] = false;
+            startGathering();
+            actionTaken = true;
+      }
     }
 
     // If no action was taken, treat the click as a regular tile click
@@ -977,12 +1001,29 @@ function p3_drawAfter(i, j) {
     [-2, -3]  // Up, then Left
   ];
   
-  if (XXH.h32("tile:" + [i, j], worldSeed) % 50 == 0 && getBiomeType(i, j) === "grassland") {
+  if (XXH.h32("tile:" + [i, j], worldSeed) % 11 == 0 && getBiomeType(i, j) === "grassland") {
     let isValidPosition = true;
     for (let [dx, dy] of directions) {
         const x = i + dx;
         const y = j + dy;
-        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || getBiomeType(x, y) === "water") {
+        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || weeds[[x, y]] || getBiomeType(x, y) === "water") {
+            isValidPosition = false;
+            break; // Exit loop early since we found an adjacent or diagonal tile occupied by a tree
+        }
+    }
+    if (isValidPosition) {
+      if (weeds[[i, j]] !== false)
+        weeds[[i, j]] = true;
+    } else {
+        weeds[[i, j]] = false; // Reset current tile to false if adjacent or diagonal tile is occupied by a tree
+    }
+  }
+  else if (XXH.h32("tile:" + [i, j], worldSeed) % 50 == 0 && getBiomeType(i, j) === "grassland") {
+    let isValidPosition = true;
+    for (let [dx, dy] of directions) {
+        const x = i + dx;
+        const y = j + dy;
+        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || weeds[[x, y]] || getBiomeType(x, y) === "water") {
             isValidPosition = false;
             break; // Exit loop early since we found an adjacent or diagonal tile occupied by a tree
         }
@@ -998,7 +1039,7 @@ function p3_drawAfter(i, j) {
     for (let [dx, dy] of directions) {
         const x = i + dx;
         const y = j + dy;
-        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || getBiomeType(x, y) === "water") {
+        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || weeds[[x, y]] || getBiomeType(x, y) === "water") {
             isValidPosition = false;
             break; // Exit loop early since we found an adjacent or diagonal tile occupied by a deadtree
         }
@@ -1014,7 +1055,7 @@ function p3_drawAfter(i, j) {
     for (let [dx, dy] of directions) {
         const x = i + dx;
         const y = j + dy;
-        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || getBiomeType(x, y) === "water") {
+        if (treePosition[[x, y]] || deadtreePosition[[x, y]] || rockPosition[[x, y]] || weeds[[x, y]] || getBiomeType(x, y) === "water") {
             isValidPosition = false;
             break; // Exit loop early since we found an adjacent or diagonal tile occupied by a rock
         }
@@ -1077,6 +1118,23 @@ function p3_drawAfter(i, j) {
       orCol = 0;
       orRow = 1;
       image(overworldResourcesTilesheet, 0, 0, 64, 64, orCol * 32 , orRow * 32, 32, 32);
+    }
+  }
+
+  if (weeds[[i, j]] === true) {
+    if (weeds[[i, j]] !== false) {
+      orCol = 4;
+      orRow = 4;
+      let num = XXH.h32("tile:" + [[i, j]], worldSeed) % 3;
+      orCol += num;
+      weeds[[i, j]] = true;
+      image(cropTilesheet, 0, -40, 32, 64, 32 * orCol, 64 * orRow, 32, 64);
+    }
+    else {
+      orCol = 0;
+      orRow = 8;
+      console.log('test')
+      image(cropTilesheet, 0, -40, 32, 64, 32 * orCol, 64 * orRow, 32, 64);
     }
   }
 
@@ -1184,6 +1242,7 @@ function p3_drawAfter(i, j) {
         rocks[[i + i0, j - j0]] = false;
         trees[[i + i0, j - j0]] = false;
         deadtrees[[i + i0, j - j0]] = false;
+        weeds[[i + i0, j - j0]] = false;
         rockPosition[[i + i0, j - j0]] = false;
         treePosition[[i + i0, j - j0]] = false;
         deadtreePosition[[i + i0, j - j0]] = false;

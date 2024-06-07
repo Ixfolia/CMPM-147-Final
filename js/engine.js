@@ -253,7 +253,6 @@ function draw() {
     text("Build", width / 2, height / 3);
     textSize(24);
     text("Click to Start", width / 2, height / 2);
-    textSize(16);
   } else {
     updateGathering();
 

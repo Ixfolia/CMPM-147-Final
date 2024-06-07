@@ -36,6 +36,7 @@ let obstacles = {};
 
 let startScreen = true;
 let upgradeScreen = false;
+let sellScreen = false;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
@@ -55,6 +56,23 @@ let houseKey;
 let houseType = null;
 let houseNotChosen = false;
 
+// variable for sell/inventory
+let harvestedCropsTilesheet;
+let createdSellButtons = false;
+let beansButton;
+let blueberryButton;
+let carrotButton;
+let cauliflowerButton;
+let cornButton;
+let eggplantButton;
+let parsnipButton;
+let potatoButton;
+let pumpkinButton;
+let radishButton;
+let strawberryButton;
+let tomatoButton;
+
+let sellingCrop;
 /////////////////////////////
 // Transforms between coordinate systems
 // These are actually slightly weirder than in full 3d...
@@ -106,6 +124,8 @@ function preload() {
   idle_down = loadImage("./assets/farmer_movement.png");
   idle_left = loadImage("./assets/farmer_movement.png");
   idle_right = loadImage("./assets/farmer_movement.png");
+
+  harvestedCropsTilesheet = loadImage("./assets/buttons/harvestedCrops.png");
 }
 
 function setup() {
@@ -791,6 +811,247 @@ function draw() {
       createUpgradeButtons();
     }
   }
+
+  // sell/inventory Screen
+  if (sellScreen) {
+    stroke(0, 0, 0);
+    fill ("#AEAEAE");
+    beginShape();
+    translate(width/8, height/8); // Center the tile around the cursor
+    vertex(0, 0); // Top-left corner
+    vertex(width - width/4, 0); // Top-right corner
+    vertex(width - width/4, height - height/4); // Bottom-right corner
+    vertex(0, height - height/4); // Bottom-left corner
+    endShape(CLOSE);
+
+    fill (0);
+    text("Inventory", width / 10, height / 12);
+
+    // box to contain item to sell
+    beginShape();
+    strokeWeight(2);
+    noFill();
+    translate(width/2 - 16, height/7 - 8) // Center the tile around the cursor
+    vertex(0, 0); // Top-left corner
+    vertex(192, 0); // Top-right corner
+    vertex(192, 192); // Bottom-right corner
+    vertex(0, 192); // Bottom-left corner
+    endShape(CLOSE);
+    strokeWeight(1);
+    translate(-(width/2 - 16), -(height/7 - 8))
+
+    // box to contain items
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/40, height/7 - 8); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(320, 0); // Top-right corner
+      vertex(320, 232); // Bottom-right corner
+      vertex(0, 232); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+
+    // if (inventory[0] < 15 && inventory[1] < 15) {
+    //   fill(216, 0, 0);
+    //   stroke(216, 0, 0);
+    //   textSize(12);
+    //   text("Not Enough Resources!", width/2 + width / 8, height/2 + height / 10);
+    //   textSize(24);
+    //   fill(0);
+    //   stroke(0);
+    // }
+    // else if (houseNotChosen) {
+    //   fill(216, 0, 0);
+    //   stroke(216, 0, 0);
+    //   textSize(12);
+    //   text("Choose a House!", width/2 + width / 7, height/2 + height / 10);
+    //   textSize(24);
+    //   fill(0);
+    //   stroke(0);
+    // }
+
+    if (sellingCrop === "beans") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 5 - 64 * 5 + 8, height/120 + 16 * 0); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48, 0, 192, 192, 2 * 16, 0 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "blueberry") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 4 - 64 * 4 + 8, height/120 + 16 * 0); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80, 0, 192, 192, 0 * 16, 2 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "carrot") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 3 - 64 * 3 + 8, height/120 + 16 * 0); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, 0, 192, 192, 0 * 16, 0 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "cauliflower") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 2 - 64 * 2 + 8, height/120 + 16 * 0); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, 0, 192, 192, 1 * 16, 0 * 16, 16, 16);
+    }
+
+    if (sellingCrop === "corn") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 5 - 64 * 5 + 8, height/120 + 16 * 1 + 64); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48, -80, 192, 192, 1 * 16, 2 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "eggplant") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 4 - 64 * 4 + 8, height/120 + 16 * 1 + 64); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80, -80, 192, 192, 2 * 16, 2 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "parsnip") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 3 - 64 * 3 + 8, height/120 + 16 * 1 + 64); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, -80, 192, 192, 0 * 16, 1 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "potato") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 2 - 64 * 2 + 8, height/120 + 16 * 1 + 64); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, -80, 192, 192, 1 * 16, 1 * 16, 16, 16);
+    }
+
+    if (sellingCrop === "pumpkin") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 5 - 64 * 5 + 8, height/120 + 16 * 2 + 64 * 2); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48, -80 * 2, 192, 192, 0 * 16, 3 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "radish") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 4 - 64 * 4 + 8, height/120 + 16 * 2 + 64 * 2); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80, -80 * 2, 192, 192, 1 * 16, 3 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "strawberry") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 3 - 64 * 3 + 8, height/120 + 16 * 2 + 64 * 2); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, -80 * 2, 192, 192, 2 * 16, 1 * 16, 16, 16);
+    }
+
+    else if (sellingCrop === "tomato") {
+      beginShape();
+      strokeWeight(2);
+      noFill();
+      translate(width/2 - 16 * 2 - 64 * 2 + 8, height/120 + 16 * 2 + 64 * 2); // Center the tile around the cursor
+      vertex(0, 0); // Top-left corner
+      vertex(64, 0); // Top-right corner
+      vertex(64, 64); // Bottom-right corner
+      vertex(0, 64); // Bottom-left corner
+      endShape(CLOSE);
+      strokeWeight(1);
+      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, -80 * 2, 192, 192, 2 * 16, 3 * 16, 16, 16);
+    }
+    else {
+      beginShape();
+      noFill();
+      vertex(0, 0); // Top-left corner
+      endShape(CLOSE);
+    }
+
+    noStroke();
+    noFill();
+
+    if (!createdSellButtons){
+      createSellButtons();
+    }
+  }
 }
 
 function removeObstacle(key) {
@@ -944,5 +1205,82 @@ function createUpgradeButtons() {
     house3Button.remove();
     createdUpgradeButtons = false;
     houseType = null;
+  });
+}
+
+function createSellButtons() {
+  createdSellButtons = true;
+
+  // house1Button = createImg("./assets/buttons/house1.png", "house1 Button");
+  // house1Button.position(width/2 - 32, height - height/4);
+  // house1Button.mouseClicked(() => houseType = 1);
+  // house2Button = createImg("./assets/buttons/house2.png", "house2 Button");
+  // house2Button.position(width/2 - 32 + width/4, height - height/4);
+  // house2Button.mouseClicked(() => houseType = 3);
+  // house3Button = createImg("./assets/buttons/house3.png", "house3 Button");
+  // house3Button.position(width/2 - 32 - width/4, height - height/4);
+  // house3Button.mouseClicked(() => houseType = 2);
+  checkButton = createImg("./assets/buttons/check.png", "check Button");
+  checkButton.position(width/2 + width/4, height + height/6);
+  checkButton.size(36, 36)
+  checkButton.mouseClicked(() => {
+
+  });
+  beansButton = createImg("./assets/buttons/crops/beans.png", "beans Button");
+  beansButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 0);
+  beansButton.mouseClicked(() => sellingCrop = "beans");
+  blueberryButton = createImg("./assets/buttons/crops/blueberry.png", "blueberry Button");
+  blueberryButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 0);
+  blueberryButton.mouseClicked(() => sellingCrop = "blueberry");
+  carrotButton = createImg("./assets/buttons/crops/carrot.png", "carrot Button");
+  carrotButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 0);
+  carrotButton.mouseClicked(() => sellingCrop = "carrot");
+  cauliflowerButton = createImg("./assets/buttons/crops/cauliflower.png", "cauliflower Button");
+  cauliflowerButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 0);
+  cauliflowerButton.mouseClicked(() => sellingCrop = "cauliflower");
+  cornButton = createImg("./assets/buttons/crops/corn.png", "corn Button");
+  cornButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 1 + 64);
+  cornButton.mouseClicked(() => sellingCrop = "corn");
+  eggplantButton = createImg("./assets/buttons/crops/eggplant.png", "eggplant Button");
+  eggplantButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 1 + 64);
+  eggplantButton.mouseClicked(() => sellingCrop = "eggplant");
+  parsnipButton = createImg("./assets/buttons/crops/parsnip.png", "parsnip Button");
+  parsnipButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 1 + 64);
+  parsnipButton.mouseClicked(() => sellingCrop = "parsnip");
+  potatoButton = createImg("./assets/buttons/crops/potato.png", "potato Button");
+  potatoButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 1 + 64);
+  potatoButton.mouseClicked(() => sellingCrop = "potato");
+  pumpkinButton = createImg("./assets/buttons/crops/pumpkin.png", "pumpkin Button");
+  pumpkinButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 2 + 64 * 2);
+  pumpkinButton.mouseClicked(() => sellingCrop = "pumpkin");
+  radishButton = createImg("./assets/buttons/crops/radish.png", "radish Button");
+  radishButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 2 + 64 * 2);
+  radishButton.mouseClicked(() => sellingCrop = "radish");
+  strawberryButton = createImg("./assets/buttons/crops/strawberry.png", "strawberry Button");
+  strawberryButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 2 + 64 * 2);
+  strawberryButton.mouseClicked(() => sellingCrop = "strawberry");
+  tomatoButton = createImg("./assets/buttons/crops/tomato.png", "tomato Button");
+  tomatoButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 2 + 64 * 2);
+  tomatoButton.mouseClicked(() => sellingCrop = "tomato");
+
+  xButton = createImg("./assets/buttons/x.png", "x Button");
+  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.mouseClicked(() => {
+    sellScreen = false;
+    checkButton.remove();
+    xButton.remove();
+    beansButton.remove();
+    blueberryButton.remove();
+    carrotButton.remove();
+    cauliflowerButton.remove();
+    cornButton.remove();
+    eggplantButton.remove();
+    parsnipButton.remove();
+    potatoButton.remove();
+    pumpkinButton.remove();
+    radishButton.remove();
+    strawberryButton.remove();
+    tomatoButton.remove();
+    createdUpgradeButtons = false;
   });
 }

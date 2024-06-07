@@ -129,6 +129,7 @@ let farmTiles = {};
 let fences = {};
 let stonePaths = {};
 let crop = {};
+let cropInventory = {};
 
 let placingHouse = false;
 let upgradeHouse = false;

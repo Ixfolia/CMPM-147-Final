@@ -94,6 +94,20 @@ function p3_setup() {
   createPatterns()
   soundLoop = new p5.SoundLoop(onSoundLoop, intervalInSeconds);
   playSynth()
+
+  // initialize inventory
+  cropInventory["beans"] = 0;
+  cropInventory["blueberry"] = 0;
+  cropInventory["carrot"] = 0;
+  cropInventory["cauliflower"] = 0;
+  cropInventory["corn"] = 0;
+  cropInventory["eggplant"] = 0;
+  cropInventory["parsnip"] = 0;
+  cropInventory["potato"] = 0;
+  cropInventory["pumpkin"] = 0;
+  cropInventory["radish"] = 0;
+  cropInventory["strawberry"] = 0;
+  cropInventory["tomato"] = 0;
 }
 
 let worldSeed;
@@ -113,6 +127,7 @@ const gatheringDuration = 1500; // 5 seconds in milliseconds
 let wood = 20;
 let stone = 20;
 let seeds = 10;
+let money = 0;
 let rocks = {}; // Object to track tiles with rocks
 let trees = {}; // Object to track tiles with trees
 let deadtrees = {}; // Object to track tiles with trees
@@ -150,6 +165,7 @@ function p3_worldKeyChanged(key) {
   wood = 20;
   stone = 20;
   seeds = 10;
+  money = 0;
   rocks = {}; // Object to track tiles with rocks
   trees = {}; // Object to track tiles with trees
   deadtrees = {}; // Object to track tiles with trees
@@ -558,6 +574,12 @@ function click(key) {
   } 
   else if (farmTiles[key] && crop[key] && planting) {
     if (crop[key] !== false) {
+        let cropInfo = getCrop(key);
+        console.log(cropInfo.cropTypeID)
+        if (cropInfo.growthStageID >= 3) {
+          cropInventory[cropInfo.cropTypeID] += 1;
+          console.log(cropInventory);
+        }
         crop[key] = false;
         seeds++;
     }
@@ -1513,7 +1535,7 @@ function getAutotileCoords(i, j) {
 }
 
 function getResourceInfo() {
-  return [wood, stone, seeds, gathering, rocks, trees, deadtrees, houses, water, fences];
+  return [wood, stone, seeds, gathering, rocks, trees, deadtrees, houses, water, fences, cropInventory, money];
 }
 
 function startGathering() {
@@ -1605,6 +1627,11 @@ function setHouseType(key, type) {
 function subtractHouseUpgradePayment() {
   wood -= 15;
   stone -= 15;
+}
+
+function soldCrop(amount, crop) {
+  money += amount;
+  cropInventory[crop] -= 1
 }
 
 function action(newState) {

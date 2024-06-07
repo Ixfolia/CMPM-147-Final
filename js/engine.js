@@ -72,7 +72,9 @@ let radishButton;
 let strawberryButton;
 let tomatoButton;
 
+let sellButton;
 let sellingCrop;
+
 /////////////////////////////
 // Transforms between coordinate systems
 // These are actually slightly weirder than in full 3d...
@@ -236,6 +238,52 @@ function setup() {
 
   farmer = new Sprite(walk_down, width / 2, height / 2, 0);
 
+  // inventory and build button
+  let buildButton = createImg("./assets/buttons/buildButton.png", "build Button");
+  buildButton.position(width - 16 - 4, height + height/3.5 - 4);
+  buildButton.size(48, 48)
+  buildButton.mouseClicked(() => {
+    upgradeScreen = false;
+
+    // remove sellScreen elements
+    if (sellScreen) {
+      sellScreen = false;
+      checkButton.remove();
+      xButton.remove();
+      beansButton.remove();
+      blueberryButton.remove();
+      carrotButton.remove();
+      cauliflowerButton.remove();
+      cornButton.remove();
+      eggplantButton.remove();
+      parsnipButton.remove();
+      potatoButton.remove();
+      pumpkinButton.remove();
+      radishButton.remove();
+      strawberryButton.remove();
+      tomatoButton.remove();
+      createdSellButtons = false;
+    }
+  });
+  let inventoryButton = createImg("./assets/buttons/inventoryButton.png", "inventopry Button");
+  inventoryButton.position(width - 16 - 4 * 2 - 48, height + height/3.5 - 4);
+  inventoryButton.size(48, 48)
+  inventoryButton.mouseClicked(() => {
+    sellScreen = true;
+
+    // remove upgradeScreen elements
+    if (upgradeScreen) {
+      upgradeScreen = false;
+      checkButton.remove();
+      xButton.remove();
+      house1Button.remove();
+      house2Button.remove();
+      house3Button.remove();
+      createdUpgradeButtons = false;
+      houseType = null;
+    }
+  });
+
   strokeWeight(1);
 }
 
@@ -312,7 +360,7 @@ function draw() {
               // fill(255, 0, 0);
               // rect(obstacles[key].x, obstacles[key].y, tile_width_step_main, tile_height_step_main);
               // noFill();
-              console.log("Collision detected!");
+              // console.log("Collision detected!");
               camera_velocity.x = 0;
               collisionDetected = true;
               // Activate cooldown
@@ -350,7 +398,7 @@ function draw() {
               // fill(255, 0, 0);
               // rect(obstacles[key].x, obstacles[key].y, tile_width_step_main, tile_height_step_main);
               // noFill();
-              console.log("Collision detected!");
+              // console.log("Collision detected!");
               camera_velocity.x = 0;
               collisionDetected = true;
               break;
@@ -385,7 +433,7 @@ function draw() {
               // fill(255, 0, 0);
               // rect(obstacles[key].x, obstacles[key].y, tile_width_step_main, tile_height_step_main);
               // noFill();
-              console.log("Collision detected!");
+              // console.log("Collision detected!");
               camera_velocity.y = 0;
               collisionDetected = true;
               break;
@@ -420,7 +468,7 @@ function draw() {
               // fill(255, 0, 0);
               // rect(obstacles[key].x, obstacles[key].y, tile_width_step_main, tile_height_step_main);
               // noFill();
-              console.log("Collision detected!");
+              // console.log("Collision detected!");
               camera_velocity.y = 0;
               collisionDetected = true;
               break;
@@ -581,6 +629,7 @@ function draw() {
     let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
     text(`x${inventory[2]}`, width - 30, 105);
     let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
+    text(`$${inventory[11]}`, width - 30, 145);
 
     noStroke();
     noFill();
@@ -682,7 +731,7 @@ function draw() {
     let nightColor = color(0, 0, 0, 168);
     let currentColor;
 
-    let timeInMinutes = 5;
+    let timeInMinutes = .01;
     let cycleTime = timeInMinutes * 60 * 1000;
 
     // parts of the day/night are split into quarters
@@ -827,6 +876,26 @@ function draw() {
     fill (0);
     text("Inventory", width / 10, height / 12);
 
+    // inventory quantity
+    let cropsInventory = getResourceInfo();
+    let cropQuantity = cropsInventory[10]
+
+    textSize(8)
+    text(`${cropQuantity["beans"]}`, width/2 - 16 * 4 - 64 * 4 + 8, height - height/3 + 16 * 2 - 64 * 3 + 4);
+    text(`${cropQuantity["blueberry"]}`, width/2 - 16 * 3 - 64 * 3 + 8, height - height/3 + 16 * 2 - 64 * 3 + 4);
+    text(`${cropQuantity["carrot"]}`, width/2 - 16 * 2 - 64 * 2 + 8, height - height/3 + 16 * 2 - 64 * 3 + 4);
+    text(`${cropQuantity["cauliflower"]}`, width/2 - 16 * 1 - 64 * 1 + 8, height - height/3 + 16 * 2 - 64 * 3 + 4);
+    text(`${cropQuantity["corn"]}`, width/2 - 16 * 4 - 64 * 4 + 8, height - height/3 + 16 * 3 - 64 * 2 + 4);
+    text(`${cropQuantity["eggplant"]}`, width/2 - 16 * 3 - 64 * 3 + 8, height - height/3 + 16 * 3 - 64 * 2 + 4);
+    text(`${cropQuantity["parsnip"]}`, width/2 - 16 * 2 - 64 * 2 + 8, height - height/3 + 16 * 3 - 64 * 2 + 4);
+    text(`${cropQuantity["potato"]}`, width/2 - 16 * 1 - 64 * 1 + 8, height - height/3 + 16 * 3 - 64 * 2 + 4);
+    text(`${cropQuantity["pumpkin"]}`, width/2 - 16 * 4 - 64 * 4 + 8, height - height/3 + 16 * 4 - 64 * 1 + 4);
+    text(`${cropQuantity["radish"]}`, width/2 - 16 * 3 - 64 * 3 + 8, height - height/3 + 16 * 4 - 64 * 1 + 4);
+    text(`${cropQuantity["strawberry"]}`, width/2 - 16 * 2 - 64 * 2 + 8, height - height/3 + 16 * 4 - 64 * 1 + 4);
+    text(`${cropQuantity["tomato"]}`, width/2 - 16 * 1 - 64 * 1 + 8, height - height/3 + 16 * 4 - 64 * 1 + 4);
+
+    textSize(24)
+
     // box to contain item to sell
     beginShape();
     strokeWeight(2);
@@ -852,24 +921,15 @@ function draw() {
       endShape(CLOSE);
       strokeWeight(1);
 
-    // if (inventory[0] < 15 && inventory[1] < 15) {
-    //   fill(216, 0, 0);
-    //   stroke(216, 0, 0);
-    //   textSize(12);
-    //   text("Not Enough Resources!", width/2 + width / 8, height/2 + height / 10);
-    //   textSize(24);
-    //   fill(0);
-    //   stroke(0);
-    // }
-    // else if (houseNotChosen) {
-    //   fill(216, 0, 0);
-    //   stroke(216, 0, 0);
-    //   textSize(12);
-    //   text("Choose a House!", width/2 + width / 7, height/2 + height / 10);
-    //   textSize(24);
-    //   fill(0);
-    //   stroke(0);
-    // }
+      if (cropQuantity[sellingCrop] <= 0) {
+        fill(216, 0, 0);
+        stroke(216, 0, 0);
+        textSize(12);
+        text("Not Enough \nItems To Sell", width/4 + width/4.6, height/2 + height / 20);
+        textSize(24);
+        fill(0);
+        stroke(0);
+      }
 
     if (sellingCrop === "beans") {
       beginShape();
@@ -882,7 +942,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48, 0, 192, 192, 2 * 16, 0 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44, 0, 192, 192, 2 * 16, 0 * 16, 16, 16);
     }
 
     else if (sellingCrop === "blueberry") {
@@ -896,7 +956,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80, 0, 192, 192, 0 * 16, 2 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80, -4, 192, 192, 0 * 16, 2 * 16, 16, 16);
     }
 
     else if (sellingCrop === "carrot") {
@@ -910,7 +970,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, 0, 192, 192, 0 * 16, 0 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 2, -4, 192, 192, 0 * 16, 0 * 16, 16, 16);
     }
 
     else if (sellingCrop === "cauliflower") {
@@ -924,7 +984,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, 0, 192, 192, 1 * 16, 0 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 3, -4, 192, 192, 1 * 16, 0 * 16, 16, 16);
     }
 
     if (sellingCrop === "corn") {
@@ -938,7 +998,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48, -80, 192, 192, 1 * 16, 2 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44, -80 - 4, 192, 192, 1 * 16, 2 * 16, 16, 16);
     }
 
     else if (sellingCrop === "eggplant") {
@@ -952,7 +1012,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80, -80, 192, 192, 2 * 16, 2 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80, -80 - 4, 192, 192, 2 * 16, 2 * 16, 16, 16);
     }
 
     else if (sellingCrop === "parsnip") {
@@ -966,7 +1026,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, -80, 192, 192, 0 * 16, 1 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 2, -80 - 4, 192, 192, 0 * 16, 1 * 16, 16, 16);
     }
 
     else if (sellingCrop === "potato") {
@@ -980,7 +1040,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, -80, 192, 192, 1 * 16, 1 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 3, -80 - 4, 192, 192, 1 * 16, 1 * 16, 16, 16);
     }
 
     if (sellingCrop === "pumpkin") {
@@ -994,7 +1054,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48, -80 * 2, 192, 192, 0 * 16, 3 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44, -80 * 2 - 4, 192, 192, 0 * 16, 3 * 16, 16, 16);
     }
 
     else if (sellingCrop === "radish") {
@@ -1008,7 +1068,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80, -80 * 2, 192, 192, 1 * 16, 3 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80, -80 * 2 - 4, 192, 192, 1 * 16, 3 * 16, 16, 16);
     }
 
     else if (sellingCrop === "strawberry") {
@@ -1022,7 +1082,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 2, -80 * 2, 192, 192, 2 * 16, 1 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 2, -80 * 2 - 4, 192, 192, 2 * 16, 1 * 16, 16, 16);
     }
 
     else if (sellingCrop === "tomato") {
@@ -1036,7 +1096,7 @@ function draw() {
       vertex(0, 64); // Bottom-left corner
       endShape(CLOSE);
       strokeWeight(1);
-      image(harvestedCropsTilesheet, width/2 - 48 - 80 * 3, -80 * 2, 192, 192, 2 * 16, 3 * 16, 16, 16);
+      image(harvestedCropsTilesheet, width/2 - 44 - 80 * 3, -80 * 2 - 4, 192, 192, 2 * 16, 3 * 16, 16, 16);
     }
     else {
       beginShape();
@@ -1211,20 +1271,15 @@ function createUpgradeButtons() {
 function createSellButtons() {
   createdSellButtons = true;
 
-  // house1Button = createImg("./assets/buttons/house1.png", "house1 Button");
-  // house1Button.position(width/2 - 32, height - height/4);
-  // house1Button.mouseClicked(() => houseType = 1);
-  // house2Button = createImg("./assets/buttons/house2.png", "house2 Button");
-  // house2Button.position(width/2 - 32 + width/4, height - height/4);
-  // house2Button.mouseClicked(() => houseType = 3);
-  // house3Button = createImg("./assets/buttons/house3.png", "house3 Button");
-  // house3Button.position(width/2 - 32 - width/4, height - height/4);
-  // house3Button.mouseClicked(() => houseType = 2);
-  checkButton = createImg("./assets/buttons/check.png", "check Button");
-  checkButton.position(width/2 + width/4, height + height/6);
-  checkButton.size(36, 36)
-  checkButton.mouseClicked(() => {
+  let cropsInventory = getResourceInfo();
+  let cropQuantity = cropsInventory[10]
 
+  sellButton = createImg("./assets/buttons/sellButton.png", "check Button");
+  sellButton.position(width/2 + width/4.5, height + height/6);
+  sellButton.mouseClicked(() => {
+    if (cropQuantity[sellingCrop] > 0) {
+      soldCrop(15, sellingCrop);
+    }
   });
   beansButton = createImg("./assets/buttons/crops/beans.png", "beans Button");
   beansButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 0);
@@ -1267,7 +1322,7 @@ function createSellButtons() {
   xButton.position(width/2 + width/4 + 64, height + height/6);
   xButton.mouseClicked(() => {
     sellScreen = false;
-    checkButton.remove();
+    sellButton.remove();
     xButton.remove();
     beansButton.remove();
     blueberryButton.remove();
@@ -1281,6 +1336,6 @@ function createSellButtons() {
     radishButton.remove();
     strawberryButton.remove();
     tomatoButton.remove();
-    createdUpgradeButtons = false;
+    createdSellButtons = false;
   });
 }

@@ -28,18 +28,27 @@
     <script type="text/javascript" src="./js/xxhash.min.js" DEFER></script>
     <!-- Include p5.js Sound library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <style>
+        body {
+            background-image: url('grass.png');
+            background-repeat: repeat;
+            background-size: 5%;
+        }
+        </style>
 </head>
 <body>
+    
     <main id="content">
 		<section>
 			<h1 id="experiment-title">Harvest haven</h1>
+            <div class="rectangle-box">
 			<div id="subtitle"> build, create, and explore!</div>
 			<div class="minor-section">
 				<div id="canvas-container">
                     <!-- canvas will be added here -->
                     <body>
                         <div id="container">
-                            <!-- <div id="box-container" class="modal">
+                            <div id="box-container" class="modal">
                                 <div class="box">None</div>
                                 <div class="box">House</div>
                                 <div class="box">Upgrade House</div>
@@ -48,10 +57,10 @@
                                 <div class="box">Fence | 1x Wood</div>
                                 <div class="box">Stone Paths | 1x Stone</div>
                                 <div class="box">Plant Seeds | 1x Seed</div>
-                              </div> -->
+                              </div>
                         </div>
                         <div id="paragraph-container">
-                            <p>Arrow keys scroll. Clicking changes tiles.</p>
+                            <!-- <p>Arrow keys scroll. Clicking changes tiles.</p> -->
                           </div>
                           <div id="canvas-container"></div>
                     </body>
@@ -59,15 +68,17 @@
 				<div class="fullscreen-box">
 					<button id="fullscreen">Fullscreen</button>
 				</div>
+
 				<div class="minor-section">
-					<div class="rectangle-box">
 						<h2>HOW TO PLAY</h2>
-						<p>Use WASD to move your character around, walking up to a stone or tree and clicking the object allows you to gather. With the drop down underneath the game, you are able to click what you want to craft and place. Completion is based off of your amount of materials, nothing will happen if you do not have enough wood and/or stone. 
+						<p>Use WASD to move your character around, walking up to a stone or tree and clicking the object allows you to gather. Clicking the different options to your right allows you to craft and place said item. The cost is also stated after the name of the item.
 						</p>
+                        <h3>OBJECTIVE</h3>
+                        <p>You have been entrusted with fixing up the farm that your now deceased grandfather has left behind. Create a farm that you are satisfied with from planting your own crops and designing your farm with different pathways to upgrading your house. We hope you have fun and enjoy this stress free game.</p>
 			</div>
 			<div class="right-section">
 				<h2>DESCRIPTION</h2>
-				<p>Our project, Harvest Haven, which is inspired by games like Minecraft and Stardew Valley is a procedurally generated game where users are able to explore our world and design their world with items like houses, fences, plants, and pathways. We hope you have fun!
+				<p>Our project, Harvest Haven, which is inspired by games like Minecraft and Stardew Valley is a procedurally generated game where users are able to explore our world and design their world with items like houses, fences, plants, and pathways. 
 					<br> <br> this game was created by Edwin Fong, Patrick Hu, Jackie Huang, Yingting Huang, Brady Lin, and Frank Shi.
 				</p>
 			</div>

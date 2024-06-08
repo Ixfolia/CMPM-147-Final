@@ -7,14 +7,12 @@ body {
   
 h1 {
   font-style: italic;
-  color: #9d9ebf;
+  color: #5a3a3a;
 }
 
 #container {
   display: flex;
-
   order: 1;
-  
 }
 
 #canvas-container {
@@ -28,49 +26,10 @@ h1 {
 }
 
 .box {
-  border: 1px solid #888;
+  border: 1px solid #000000;
   padding: 10px;
-  margin: 10px;
-  width: 180px; /* Adjust to fit within the box-container width */
-}
-
-#paragraph-container {
-  margin-top: 20px;
-}
-/* CSS files add styling rules to your content */
-
-body {
-  font-family: helvetica, arial, sans-serif;
-  margin: 2em;
-}
-  
-h1 {
-  font-style: italic;
-  color: #5156e8;
-}
-
-#container {
-  display: flex;
-
-  order: 1;
-  
-}
-
-#canvas-container {
-  flex-grow: 1;
-}
-
-#box-container {
-  width: 200px; /* Adjust as needed */
-  margin-right: 20px;
-  order: 2
-}
-
-.box {
-  border: 1px solid #888;
-  padding: 10px;
-  margin: 10px;
-  width: 180px; /* Adjust to fit within the box-container width */
+  margin: 20px;
+  width: 500px; /* Adjust to fit within the box-container width */
 }
 
 #paragraph-container {
@@ -80,7 +39,7 @@ h1 {
   font-family: Montserrat, sans-serif;
   letter-spacing: 0.1em; /* Adjust spacing as needed */
   text-transform: uppercase; /* Convert text to all caps */
-  font-size: 3em; /* Adjust font size as needed */
+  font-size: 5em; /* Adjust font size as needed */
   text-align: center; /* Center align the text */
 }
 #subtitle {
@@ -92,22 +51,41 @@ h1 {
 }
 .minor-section {
   font-family: Montserrat, sans-serif;
-    letter-spacing: 0.1em; /* Adjust spacing as needed */
-    text-transform: uppercase; /* Convert text to all caps */
-    font-size: 1.2em; /* Adjust font size as needed */
-    text-align: left; /* Center align the text */
+    letter-spacing: 0.1em; 
+    text-transform: uppercase; 
+    font-size: 1.2em; 
+    text-align: left; 
     display: grid;
+    border-color: black;
 }
 .rectangle-box h2,
 .right-section h2 {
-  font-weight: bold; /* Make the text bold */
-  text-decoration: underline; /* Underline the text */
+  font-weight: bold; 
+  text-decoration: underline; 
+}
+
+.rectangle-box h3,
+.right-section h3 {
+  font-weight: bold; 
+  text-decoration: underline; 
+  font-size: 1.5em; 
 }
 .right-section {
-  flex: 1; /* Allow the box to grow and shrink based on available space */
-  height: auto; /* Adjust height automatically */
+  font-family: Montserrat, sans-serif;
+    letter-spacing: 0.1em; 
+    text-transform: uppercase; 
+    font-size: 1.3em; 
+  flex: 1; 
+  height: auto; 
+  box-sizing: border-box; 
+  text-align: left; 
+  margin-top: 20px; 
+  margin-right: 40
+}
 
-  box-sizing: border-box; /* Ensure padding is included in width and height */
-  text-align: left; /* Left align text */
-  margin-top: 20px; /* Space between sections */
+.rectangle-box {
+  padding: 2em; 
+  margin: 1em; 
+  border: 1px solid #000000;
+    background-color: rgb(186, 154, 138);
 }

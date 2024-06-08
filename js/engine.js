@@ -35,14 +35,37 @@ let cooldownStartTime = 0;
 let obstacles = {};
 
 let startScreen = true;
+let buildScreen = false;
 let upgradeScreen = false;
 let sellScreen = false;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
 
-let boxes;
+// let boxes;
 let inventory;
+
+// variables for states
+let createdBuildButtons = false;
+let createdBuildingButtons = false;
+let upgradeHouseButton;
+let houseButton;
+let farmTileButton;
+let stonePathButton;
+let fenceButton;
+let pathButton;
+let seedsButton;
+let upgradeHouseButton2;
+let houseButton2;
+let farmTileButton2;
+let stonePathButton2;
+let fenceButton2;
+let pathButton2;
+let seedsButton2;
+let xButton;
+let building = false;
+let cancelButton;
+let state;
 
 // variables for upgrading house
 let createdUpgradeButtons = false;
@@ -50,7 +73,6 @@ let house1Button;
 let house2Button;
 let house3Button;
 let checkButton;
-let xButton;
 
 let houseKey;
 let houseType = null;
@@ -151,8 +173,8 @@ function setup() {
   }
 
   // Create a container div for the select element
-  let selectContainer = createDiv();
-  selectContainer.parent("container"); // Append it to the same parent as the canvas
+  // let selectContainer = createDiv();
+  // selectContainer.parent("container"); // Append it to the same parent as the canvas
 
   //   // Create a select element
   //   let select = createSelect();
@@ -179,48 +201,48 @@ function setup() {
   //   // Add an event listener for selection change
   //   select.changed(selectionChanged);
 
-  // Get all the boxes
-  boxes = document.getElementsByClassName("box");
+  // // Get all the boxes
+  // boxes = document.getElementsByClassName("box");
 
-  // Tracking last clicked box
-  let lastClickedBox = null;
+  // // Tracking last clicked box
+  // let lastClickedBox = null;
 
-  // Mapping from box text content to newState values
-  let newStateMapping = {
-    None: "",
-    House: "placingHouse",
-    "Upgrade House": "upgradeHouse",
-    "Path Tiles": "placingPathTiles",
-    "Farm Tiles": "placingFarmTiles",
-    "Fence | 1x Wood": "placingFence",
-    "Stone Paths | 1x Stone": "placingStonePaths",
-    "Plant Seeds | 1x Seed": "planting",
-  };
+  // // Mapping from box text content to newState values
+  // let newStateMapping = {
+  //   None: "",
+  //   House: "placingHouse",
+  //   "Upgrade House": "upgradeHouse",
+  //   "Path Tiles": "placingPathTiles",
+  //   "Farm Tiles": "placingFarmTiles",
+  //   "Fence | 1x Wood": "placingFence",
+  //   "Stone Paths | 1x Stone": "placingStonePaths",
+  //   "Plant Seeds | 1x Seed": "planting",
+  // };
 
-  for (var i = 0; i < boxes.length; i++) {
-    // Add a click event listener to each box
-    boxes[i].addEventListener("click", function () {
-      // This function will be executed when the box is clicked
-      // 'this' refers to the box that was clicked
+  // for (var i = 0; i < boxes.length; i++) {
+  //   // Add a click event listener to each box
+  //   boxes[i].addEventListener("click", function () {
+  //     // This function will be executed when the box is clicked
+  //     // 'this' refers to the box that was clicked
 
-      // If there was a last clicked box, change its background color back to white
-      if (lastClickedBox) {
-        lastClickedBox.style.backgroundColor = "white";
-      }
+  //     // If there was a last clicked box, change its background color back to white
+  //     if (lastClickedBox) {
+  //       lastClickedBox.style.backgroundColor = "white";
+  //     }
 
-      // Change the background color of the clicked box to yellow
-      this.style.backgroundColor = "yellow";
+  //     // Change the background color of the clicked box to yellow
+  //     this.style.backgroundColor = "yellow";
 
-      // Update the last clicked box
-      lastClickedBox = this;
+  //     // Update the last clicked box
+  //     lastClickedBox = this;
 
-      // Get the newState value from the mapping
-      var newState = newStateMapping[this.textContent.trim()];
+  //     // Get the newState value from the mapping
+  //     var newState = newStateMapping[this.textContent.trim()];
 
-      // Call the action function with the newState value
-      action(newState);
-    });
-  }
+  //     // Call the action function with the newState value
+  //     action(newState);
+  //   });
+  // }
 
   // resetAction();
 
@@ -243,7 +265,7 @@ function setup() {
   buildButton.position(width - 16 - 4, height + height/3.5 - 4);
   buildButton.size(48, 48)
   buildButton.mouseClicked(() => {
-    upgradeScreen = false;
+    buildScreen = true;
 
     // remove sellScreen elements
     if (sellScreen) {
@@ -264,7 +286,26 @@ function setup() {
       tomatoButton.remove();
       createdSellButtons = false;
     }
+
+    // remove upgradeScreen elements
+    if (upgradeScreen) {
+      upgradeScreen = false;
+      checkButton.remove();
+      xButton.remove();
+      house1Button.remove();
+      house2Button.remove();
+      house3Button.remove();
+      createdUpgradeButtons = false;
+      houseType = null;
+    }
+    
+    //remove building elements
+    if (building) {
+      cancelButton.elt.click();
+      createdBuildingButtons = false;
+    }
   });
+
   let inventoryButton = createImg("./assets/buttons/inventoryButton.png", "inventopry Button");
   inventoryButton.position(width - 16 - 4 * 2 - 48, height + height/3.5 - 4);
   inventoryButton.size(48, 48)
@@ -281,6 +322,20 @@ function setup() {
       house3Button.remove();
       createdUpgradeButtons = false;
       houseType = null;
+    }
+
+    // remove buildScreen elements
+    if (buildScreen) {
+      buildScreen = false;
+      xButton.remove();
+      houseButton.remove();
+      upgradeHouseButton.remove();
+      pathButton.remove();
+      farmTileButton.remove();
+      seedsButton.remove();
+      fenceButton.remove();
+      stonePathButton.remove();
+      createdBuildButtons = false;
     }
   });
 
@@ -731,7 +786,7 @@ function draw() {
     let nightColor = color(0, 0, 0, 168);
     let currentColor;
 
-    let timeInMinutes = .01;
+    let timeInMinutes = 5;
     let cycleTime = timeInMinutes * 60 * 1000;
 
     // parts of the day/night are split into quarters
@@ -773,6 +828,65 @@ function draw() {
     // if (window.p3_drawAfter) {
     //   window.p3_drawAfter();
     // }
+  }
+
+  // build info
+  if (building) {
+    stroke(0, 0, 0);
+    fill ("#AEAEAE");
+    beginShape();
+    strokeWeight(2);
+    //translate(width - 16 - 4, height + height/3.5 - 4); // Center the tile around the cursor
+    vertex((width - 104) + 0, (height - 108) + 0); // Top-left corner
+    vertex((width - 104) + 100, (height - 108) + 0); // Top-right corner
+    vertex((width - 104) + 100, (height - 108) + 48); // Bottom-right corner
+    vertex((width - 104) + 0, (height - 108) + 48); // Bottom-left corner
+    endShape(CLOSE);
+
+    if (!createdBuildingButtons){
+      createBuildingButtons();
+    }
+
+    strokeWeight(1);
+    textAlign(CENTER, CENTER);
+    textSize(24);
+    noStroke();
+    noFill();
+  }
+
+  // build Screen
+  if (buildScreen) {
+    stroke(0, 0, 0);
+    fill ("#AEAEAE");
+    beginShape();
+    translate(width/8, height/8); // Center the tile around the cursor
+    vertex(0, 0); // Top-left corner
+    vertex(width - width/4, 0); // Top-right corner
+    vertex(width - width/4, height - height/4); // Bottom-right corner
+    vertex(0, height - height/4); // Bottom-left corner
+    endShape(CLOSE);
+
+    fill (0);
+    text("Build", 64, height / 12);
+
+    textSize(8);
+    textAlign(LEFT, CENTER);
+    text("Build House", 32, height/4 + 64)
+    text("Upgrade\nHouse", 32 + 24 * 1 + 64 * 1, height/4 + 64)
+    text("Path", 32 + 24 * 2 + 64 * 2, height/4 + 64)
+    text("Farm\nTile", 32 + 24 * 2 + 12 + 64 * 3, height/4 + 64)
+    text("Plant\nSeeds", 32 + 24 * 3 + 64 * 4, height/4 + 64)
+    text("Fences", 32 + 24 * 3 + 12 + 64 * 5, height/4 + 64)
+    text("Stone\nPaths", 32 + 24 * 4 + 12 + 64 * 6, height/4 + 64)
+
+    textAlign(CENTER, CENTER);
+    textSize(24);
+    noStroke();
+    noFill();
+
+    if (!createdBuildButtons){
+      createBuildButtons();
+    }
   }
 
   // upgrade Screen
@@ -1212,13 +1326,165 @@ function Sprite(sheet, x, y, row) {
   };
 }
 
-function resetAction() {
-  boxes[0].click();
-}
+// function resetAction() {
+//   boxes[0].click();
+// }
 
 function upgradeHouseUI(key) {
   upgradeScreen = true;
   houseKey = key;
+}
+
+function createBuildButtons() {
+  createdBuildButtons = true;
+
+  xButton = createImg("./assets/buttons/x.png", "x Button");
+  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.mouseClicked(() => {
+    buildScreen = false;
+    xButton.remove();
+    houseButton.remove();
+    upgradeHouseButton.remove();
+    pathButton.remove();
+    farmTileButton.remove();
+    seedsButton.remove();
+    fenceButton.remove();
+    stonePathButton.remove();
+    createdBuildButtons = false;
+  });
+
+  houseButton = createImg("./assets/buttons/house.png", "house Button");
+  houseButton.position(width/5, height - height/4);
+  houseButton.mouseClicked(() => {
+    action("placingHouse");
+    state = "placingHouse";
+    building = true;
+    xButton.elt.click();
+  });
+  upgradeHouseButton = createImg("./assets/buttons/upgradeHouse.png", "upgradeHouse Button");
+  upgradeHouseButton.position(width/5 + 16 * 1 + 64 * 1, height - height/4);
+  upgradeHouseButton.mouseClicked(() => {
+    action("upgradeHouse");
+    state = "upgradeHouse";
+    building = true;
+    xButton.elt.click();
+  });
+  pathButton = createImg("./assets/buttons/path.png", "path Button");
+  pathButton.position(width/5 + 16 * 2 + 64 * 2, height - height/4);
+  pathButton.mouseClicked(() => {
+    action("placingPathTiles");
+    state = "placingPathTiles";
+    building = true;
+    xButton.elt.click();
+  });
+  farmTileButton = createImg("./assets/buttons/farmTile.png", "farmTile Button");
+  farmTileButton.position(width/5 + 16 * 3 + 64 * 3, height - height/4);
+  farmTileButton.mouseClicked(() => {
+    action("placingFarmTiles");
+    state = "placingFarmTiles";
+    building = true;
+    xButton.elt.click();
+  });
+  seedsButton = createImg("./assets/buttons/seeds.png", "seeds Button");
+  seedsButton.position(width/5 + 16 * 4 + 64 * 4, height - height/4);
+  seedsButton.mouseClicked(() => {
+    action("planting");
+    state = "planting";
+    building = true;
+    xButton.elt.click();
+  });
+  fenceButton = createImg("./assets/buttons/fence.png", "fence Button");
+  fenceButton.position(width/5 + 16 * 5 + 64 * 5, height - height/4);
+  fenceButton.mouseClicked(() => {
+    action("placingFence");
+    state = "placingFence";
+    building = true;
+    xButton.elt.click();
+  });
+  stonePathButton = createImg("./assets/buttons/stonePath.png", "stonePath Button");
+  stonePathButton.position(width/5 + 16 * 6 + 64 * 6, height - height/4);
+  stonePathButton.mouseClicked(() => {
+    action("placingStonePaths");
+    state = "placingStonePaths";
+    building = true;
+    xButton.elt.click();
+  });
+}
+
+function createBuildingButtons() {
+  createdBuildingButtons = true;
+
+  if (state === "placingHouse") {
+    houseButton2 = createImg("./assets/buttons/house.png", "house Button");
+    houseButton2.size(48, 48)
+    houseButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "upgradeHouse") {
+    upgradeHouseButton2 = createImg("./assets/buttons/upgradeHouse.png", "upgradeHouse Button");
+    upgradeHouseButton2.size(48, 48)
+    upgradeHouseButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "placingPathTiles") {
+    pathButton2 = createImg("./assets/buttons/path.png", "path Button");
+    pathButton2.size(48, 48)
+    pathButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "placingFarmTiles") {
+    farmTileButton2 = createImg("./assets/buttons/farmTile.png", "farmTile Button");
+    farmTileButton2.size(48, 48)
+    farmTileButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "planting") {
+    seedsButton2 = createImg("./assets/buttons/seeds.png", "seeds Button");
+    seedsButton2.size(48, 48)
+    seedsButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "placingFence") {
+    fenceButton2 = createImg("./assets/buttons/fence.png", "fence Button");
+    fenceButton2.size(48, 48)
+    fenceButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  else if (state === "placingStonePaths") {
+    stonePathButton2 = createImg("./assets/buttons/stonePath.png", "stonePath Button");
+    stonePathButton2.size(48, 48)
+    stonePathButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+  }
+
+  cancelButton = createImg("./assets/buttons/cancelButton.png", "cancel Button");
+  cancelButton.position(width - 16 - 4, height + height/3.5 - 10 - 48);
+  cancelButton.size(48, 48)
+  cancelButton.mouseClicked(() => {
+    cancelButton.remove();
+    if (houseButton2) {
+      houseButton2.remove();
+    }
+    if (upgradeHouseButton2) {
+      upgradeHouseButton2.remove();
+    }
+    if (pathButton2) {
+      pathButton2.remove();
+    }
+    if (farmTileButton2) {
+      farmTileButton2.remove();
+    }
+    if (seedsButton2) {
+      seedsButton2.remove();
+    }
+    if (fenceButton2) {
+      fenceButton2.remove();
+    }
+    if (stonePathButton2) {
+      stonePathButton2.remove();
+    }
+    building = false;
+    createdBuildingButtons = false;
+  });
 }
 
 function createUpgradeButtons() {

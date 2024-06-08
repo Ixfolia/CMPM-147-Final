@@ -621,7 +621,8 @@ function click(key) {
             housesPosition[key] = true;
             housesType[key] = 0;
             placingHouse = false;
-            resetAction();
+            cancelButton.elt.click();
+            // resetAction();
         }
     }
   }
@@ -658,7 +659,8 @@ function click(key) {
         }
       }
       upgradeHouse = false;
-      resetAction();
+      cancelButton.elt.click();
+      // resetAction();
     }
   }
 }

@@ -37,7 +37,7 @@ let obstacles = {};
 let startScreen = true;
 let buildScreen = false;
 let upgradeScreen = false;
-let sellScreen = false;
+let sellScreen = true;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
@@ -262,41 +262,19 @@ function setup() {
 
   // inventory and build button
   let buildButton = createImg("./assets/buttons/buildButton.png", "build Button");
-  buildButton.position(width - 16 - 4, height + height/3.5 - 4);
+  buildButton.position(width - 16 - 4 + width/20, height + height/3.5 - 4 + height/3.5);
   buildButton.size(48, 48)
   buildButton.mouseClicked(() => {
     buildScreen = true;
 
     // remove sellScreen elements
     if (sellScreen) {
-      sellScreen = false;
-      checkButton.remove();
-      xButton.remove();
-      beansButton.remove();
-      blueberryButton.remove();
-      carrotButton.remove();
-      cauliflowerButton.remove();
-      cornButton.remove();
-      eggplantButton.remove();
-      parsnipButton.remove();
-      potatoButton.remove();
-      pumpkinButton.remove();
-      radishButton.remove();
-      strawberryButton.remove();
-      tomatoButton.remove();
-      createdSellButtons = false;
+      xButton.elt.click();
     }
 
     // remove upgradeScreen elements
     if (upgradeScreen) {
-      upgradeScreen = false;
-      checkButton.remove();
-      xButton.remove();
-      house1Button.remove();
-      house2Button.remove();
-      house3Button.remove();
-      createdUpgradeButtons = false;
-      houseType = null;
+      xButton.elt.click();
     }
     
     //remove building elements
@@ -307,35 +285,19 @@ function setup() {
   });
 
   let inventoryButton = createImg("./assets/buttons/inventoryButton.png", "inventopry Button");
-  inventoryButton.position(width - 16 - 4 * 2 - 48, height + height/3.5 - 4);
+  inventoryButton.position(width - 16 - 4 * 2 - 48 + width/20, height + height/3.5 - 4 + height/3.5);
   inventoryButton.size(48, 48)
   inventoryButton.mouseClicked(() => {
     sellScreen = true;
 
     // remove upgradeScreen elements
     if (upgradeScreen) {
-      upgradeScreen = false;
-      checkButton.remove();
-      xButton.remove();
-      house1Button.remove();
-      house2Button.remove();
-      house3Button.remove();
-      createdUpgradeButtons = false;
-      houseType = null;
+      xButton.elt.click();
     }
 
     // remove buildScreen elements
     if (buildScreen) {
-      buildScreen = false;
-      xButton.remove();
-      houseButton.remove();
-      upgradeHouseButton.remove();
-      pathButton.remove();
-      farmTileButton.remove();
-      seedsButton.remove();
-      fenceButton.remove();
-      stonePathButton.remove();
-      createdBuildButtons = false;
+      xButton.elt.click();
     }
   });
 
@@ -837,10 +799,10 @@ function draw() {
     beginShape();
     strokeWeight(2);
     //translate(width - 16 - 4, height + height/3.5 - 4); // Center the tile around the cursor
-    vertex((width - 104) + 0, (height - 108) + 0); // Top-left corner
-    vertex((width - 104) + 100, (height - 108) + 0); // Top-right corner
-    vertex((width - 104) + 100, (height - 108) + 48); // Bottom-right corner
-    vertex((width - 104) + 0, (height - 108) + 48); // Bottom-left corner
+    vertex((width - 114) + 0, (height - 118) + 0); // Top-left corner
+    vertex((width - 114) + 100, (height - 118) + 0); // Top-right corner
+    vertex((width - 114) + 100, (height - 118) + 48); // Bottom-right corner
+    vertex((width - 114) + 0, (height - 118) + 48); // Bottom-left corner
     endShape(CLOSE);
 
     if (!createdBuildingButtons){
@@ -867,17 +829,17 @@ function draw() {
     endShape(CLOSE);
 
     fill (0);
-    text("Build", 64, height / 12);
+    text("Build", 48, height / 12);
 
-    textSize(8);
+    textSize(12);
     textAlign(LEFT, CENTER);
-    text("Build House", 32, height/4 + 64)
-    text("Upgrade\nHouse", 32 + 24 * 1 + 64 * 1, height/4 + 64)
-    text("Path", 32 + 24 * 2 + 64 * 2, height/4 + 64)
-    text("Farm\nTile", 32 + 24 * 2 + 12 + 64 * 3, height/4 + 64)
-    text("Plant\nSeeds", 32 + 24 * 3 + 64 * 4, height/4 + 64)
-    text("Fences", 32 + 24 * 3 + 12 + 64 * 5, height/4 + 64)
-    text("Stone\nPaths", 32 + 24 * 4 + 12 + 64 * 6, height/4 + 64)
+    text("Build House", 24, height/4 + 64)
+    text("Upgrade\nHouse", 24 + 24 * 1 + 64 * 1, height/4 + 64)
+    text("Path", 24 + 24 * 2 + 64 * 2, height/4 + 64)
+    text("Farm\nTile", 24 + 24 * 2 + 12 + 64 * 3, height/4 + 64)
+    text("Plant\nSeeds", 24 + 24 * 3 + 64 * 4, height/4 + 64)
+    text("Fences", 24 + 24 * 3 + 12 + 64 * 5, height/4 + 64)
+    text("Stone\nPaths", 24 + 24 * 4 + 12 + 64 * 6, height/4 + 64)
 
     textAlign(CENTER, CENTER);
     textSize(24);
@@ -902,7 +864,7 @@ function draw() {
     endShape(CLOSE);
 
     fill (0);
-    text("Cost: 10x Wood   10x Stone", width / 4, height / 12);
+    text("Cost: 10x Wood   10x Stone", width / 4 - 32, height / 12);
     if (inventory[0] < 15 && inventory[1] < 15) {
       fill(216, 0, 0);
       stroke(216, 0, 0);
@@ -988,7 +950,7 @@ function draw() {
     endShape(CLOSE);
 
     fill (0);
-    text("Inventory", width / 10, height / 12);
+    text("Inventory", width / 10 - 12, height / 12);
 
     // inventory quantity
     let cropsInventory = getResourceInfo();
@@ -1339,7 +1301,7 @@ function createBuildButtons() {
   createdBuildButtons = true;
 
   xButton = createImg("./assets/buttons/x.png", "x Button");
-  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.position(width/2 + width/3 + 64, height + height/2.1);
   xButton.mouseClicked(() => {
     buildScreen = false;
     xButton.remove();
@@ -1354,7 +1316,7 @@ function createBuildButtons() {
   });
 
   houseButton = createImg("./assets/buttons/house.png", "house Button");
-  houseButton.position(width/5, height - height/4);
+  houseButton.position(width/4, height/20 + height);
   houseButton.mouseClicked(() => {
     action("placingHouse");
     state = "placingHouse";
@@ -1362,7 +1324,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   upgradeHouseButton = createImg("./assets/buttons/upgradeHouse.png", "upgradeHouse Button");
-  upgradeHouseButton.position(width/5 + 16 * 1 + 64 * 1, height - height/4);
+  upgradeHouseButton.position(width/4 + 16 * 1 + 64 * 1, height/20 + height);
   upgradeHouseButton.mouseClicked(() => {
     action("upgradeHouse");
     state = "upgradeHouse";
@@ -1370,7 +1332,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   pathButton = createImg("./assets/buttons/path.png", "path Button");
-  pathButton.position(width/5 + 16 * 2 + 64 * 2, height - height/4);
+  pathButton.position(width/4 + 16 * 2 + 64 * 2, height/20 + height);
   pathButton.mouseClicked(() => {
     action("placingPathTiles");
     state = "placingPathTiles";
@@ -1378,7 +1340,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   farmTileButton = createImg("./assets/buttons/farmTile.png", "farmTile Button");
-  farmTileButton.position(width/5 + 16 * 3 + 64 * 3, height - height/4);
+  farmTileButton.position(width/4 + 16 * 3 + 64 * 3, height/20 + height);
   farmTileButton.mouseClicked(() => {
     action("placingFarmTiles");
     state = "placingFarmTiles";
@@ -1386,7 +1348,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   seedsButton = createImg("./assets/buttons/seeds.png", "seeds Button");
-  seedsButton.position(width/5 + 16 * 4 + 64 * 4, height - height/4);
+  seedsButton.position(width/4 + 16 * 4 + 64 * 4, height/20 + height);
   seedsButton.mouseClicked(() => {
     action("planting");
     state = "planting";
@@ -1394,7 +1356,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   fenceButton = createImg("./assets/buttons/fence.png", "fence Button");
-  fenceButton.position(width/5 + 16 * 5 + 64 * 5, height - height/4);
+  fenceButton.position(width/4 + 16 * 5 + 64 * 5, height/20 + height);
   fenceButton.mouseClicked(() => {
     action("placingFence");
     state = "placingFence";
@@ -1402,7 +1364,7 @@ function createBuildButtons() {
     xButton.elt.click();
   });
   stonePathButton = createImg("./assets/buttons/stonePath.png", "stonePath Button");
-  stonePathButton.position(width/5 + 16 * 6 + 64 * 6, height - height/4);
+  stonePathButton.position(width/4 + 16 * 6 + 64 * 6, height/20 + height);
   stonePathButton.mouseClicked(() => {
     action("placingStonePaths");
     state = "placingStonePaths";
@@ -1417,47 +1379,47 @@ function createBuildingButtons() {
   if (state === "placingHouse") {
     houseButton2 = createImg("./assets/buttons/house.png", "house Button");
     houseButton2.size(48, 48)
-    houseButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    houseButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "upgradeHouse") {
     upgradeHouseButton2 = createImg("./assets/buttons/upgradeHouse.png", "upgradeHouse Button");
     upgradeHouseButton2.size(48, 48)
-    upgradeHouseButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    upgradeHouseButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "placingPathTiles") {
     pathButton2 = createImg("./assets/buttons/path.png", "path Button");
     pathButton2.size(48, 48)
-    pathButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    pathButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "placingFarmTiles") {
     farmTileButton2 = createImg("./assets/buttons/farmTile.png", "farmTile Button");
     farmTileButton2.size(48, 48)
-    farmTileButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    farmTileButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "planting") {
     seedsButton2 = createImg("./assets/buttons/seeds.png", "seeds Button");
     seedsButton2.size(48, 48)
-    seedsButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    seedsButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "placingFence") {
     fenceButton2 = createImg("./assets/buttons/fence.png", "fence Button");
     fenceButton2.size(48, 48)
-    fenceButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    fenceButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   else if (state === "placingStonePaths") {
     stonePathButton2 = createImg("./assets/buttons/stonePath.png", "stonePath Button");
     stonePathButton2.size(48, 48)
-    stonePathButton2.position(width - 64 - 4, height + height/3.5 - 10 - 48);
+    stonePathButton2.position(width - 32, height + height/1.77 - 10 - 48);
   }
 
   cancelButton = createImg("./assets/buttons/cancelButton.png", "cancel Button");
-  cancelButton.position(width - 16 - 4, height + height/3.5 - 10 - 48);
+  cancelButton.position(width + 16, height + height/1.77 - 10 - 48);
   cancelButton.size(48, 48)
   cancelButton.mouseClicked(() => {
     cancelButton.remove();
@@ -1491,16 +1453,16 @@ function createUpgradeButtons() {
   createdUpgradeButtons = true;
 
   house1Button = createImg("./assets/buttons/house1.png", "house1 Button");
-  house1Button.position(width/2 - 32, height - height/4);
+  house1Button.position(width/2 + 12, height + 24);
   house1Button.mouseClicked(() => houseType = 1);
   house2Button = createImg("./assets/buttons/house2.png", "house2 Button");
-  house2Button.position(width/2 - 32 + width/4, height - height/4);
+  house2Button.position(width/2 + 12 + width/4, height + 24);
   house2Button.mouseClicked(() => houseType = 3);
   house3Button = createImg("./assets/buttons/house3.png", "house3 Button");
-  house3Button.position(width/2 - 32 - width/4, height - height/4);
+  house3Button.position(width/2 + 12 - width/4, height + 24);
   house3Button.mouseClicked(() => houseType = 2);
   checkButton = createImg("./assets/buttons/check.png", "check Button");
-  checkButton.position(width/2 + width/4, height + height/6);
+  checkButton.position(width/2 + width/3 + 16, height + height/2.1);
   checkButton.size(36, 36)
   checkButton.mouseClicked(() => {
     if (houseType != null && inventory[0] >= 15 && inventory[1] >= 15) {
@@ -1521,7 +1483,7 @@ function createUpgradeButtons() {
     }
   });
   xButton = createImg("./assets/buttons/x.png", "x Button");
-  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.position(width/2 + width/3 + 64, height + height/2.1);
   xButton.mouseClicked(() => {
     upgradeScreen = false;
     checkButton.remove();
@@ -1541,51 +1503,51 @@ function createSellButtons() {
   let cropQuantity = cropsInventory[10]
 
   sellButton = createImg("./assets/buttons/sellButton.png", "check Button");
-  sellButton.position(width/2 + width/4.5, height + height/6);
+  sellButton.position(width/2 + width/3.5, height + height/2.1);
   sellButton.mouseClicked(() => {
     if (cropQuantity[sellingCrop] > 0) {
       soldCrop(15, sellingCrop);
     }
   });
   beansButton = createImg("./assets/buttons/crops/beans.png", "beans Button");
-  beansButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 0);
+  beansButton.position(width/2 - 16 * 4 - 64 * 2, height - height/3 + 16 * 0 + 64 * 2 - 8);
   beansButton.mouseClicked(() => sellingCrop = "beans");
   blueberryButton = createImg("./assets/buttons/crops/blueberry.png", "blueberry Button");
-  blueberryButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 0);
+  blueberryButton.position(width/2 - 16 * 3 - 64 * 1, height - height/3 + 16 * 0 + 64 * 2 - 8);
   blueberryButton.mouseClicked(() => sellingCrop = "blueberry");
   carrotButton = createImg("./assets/buttons/crops/carrot.png", "carrot Button");
-  carrotButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 0);
+  carrotButton.position(width/2 - 16 * 2 - 64 * 0, height - height/3 + 16 * 0 + 64 * 2 - 8);
   carrotButton.mouseClicked(() => sellingCrop = "carrot");
   cauliflowerButton = createImg("./assets/buttons/crops/cauliflower.png", "cauliflower Button");
-  cauliflowerButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 0);
+  cauliflowerButton.position(width/2 - 16 * 1 - 64 * -1, height - height/3 + 16 * 0 + 64 * 2 - 8);
   cauliflowerButton.mouseClicked(() => sellingCrop = "cauliflower");
   cornButton = createImg("./assets/buttons/crops/corn.png", "corn Button");
-  cornButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 1 + 64);
+  cornButton.position(width/2 - 16 * 4 - 64 * 2, height - height/3 + 16 * 1 + 64 * 3 - 8);
   cornButton.mouseClicked(() => sellingCrop = "corn");
   eggplantButton = createImg("./assets/buttons/crops/eggplant.png", "eggplant Button");
-  eggplantButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 1 + 64);
+  eggplantButton.position(width/2 - 16 * 3 - 64 * 1, height - height/3 + 16 * 1 + 64 * 3 - 8);
   eggplantButton.mouseClicked(() => sellingCrop = "eggplant");
   parsnipButton = createImg("./assets/buttons/crops/parsnip.png", "parsnip Button");
-  parsnipButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 1 + 64);
+  parsnipButton.position(width/2 - 16 * 2 - 64 * 0, height - height/3 + 16 * 1 + 64 * 3 - 8);
   parsnipButton.mouseClicked(() => sellingCrop = "parsnip");
   potatoButton = createImg("./assets/buttons/crops/potato.png", "potato Button");
-  potatoButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 1 + 64);
+  potatoButton.position(width/2 - 16 * 1 - 64 * -1, height - height/3 + 16 * 1 + 64 * 3 - 8);
   potatoButton.mouseClicked(() => sellingCrop = "potato");
   pumpkinButton = createImg("./assets/buttons/crops/pumpkin.png", "pumpkin Button");
-  pumpkinButton.position(width/2 - 16 * 3 - 64 * 3, height - height/3 + 16 * 2 + 64 * 2);
+  pumpkinButton.position(width/2 - 16 * 4 - 64 * 2, height - height/3 + 16 * 2 + 64 * 4 - 8);
   pumpkinButton.mouseClicked(() => sellingCrop = "pumpkin");
   radishButton = createImg("./assets/buttons/crops/radish.png", "radish Button");
-  radishButton.position(width/2 - 16 * 2 - 64 * 2, height - height/3 + 16 * 2 + 64 * 2);
+  radishButton.position(width/2 - 16 * 3 - 64 * 1, height - height/3 + 16 * 2 + 64 * 4 - 8);
   radishButton.mouseClicked(() => sellingCrop = "radish");
   strawberryButton = createImg("./assets/buttons/crops/strawberry.png", "strawberry Button");
-  strawberryButton.position(width/2 - 16 * 1 - 64 * 1, height - height/3 + 16 * 2 + 64 * 2);
+  strawberryButton.position(width/2 - 16 * 2 - 64 * 0, height - height/3 + 16 * 2 + 64 * 4 - 8);
   strawberryButton.mouseClicked(() => sellingCrop = "strawberry");
   tomatoButton = createImg("./assets/buttons/crops/tomato.png", "tomato Button");
-  tomatoButton.position(width/2 - 16 * 0 - 64 * 0, height - height/3 + 16 * 2 + 64 * 2);
+  tomatoButton.position(width/2 - 16 * 1 - 64 * -1, height - height/3 + 16 * 2 + 64 * 4 - 8);
   tomatoButton.mouseClicked(() => sellingCrop = "tomato");
 
   xButton = createImg("./assets/buttons/x.png", "x Button");
-  xButton.position(width/2 + width/4 + 64, height + height/6);
+  xButton.position(width/2 + width/3 + 64, height + height/2.1);
   xButton.mouseClicked(() => {
     sellScreen = false;
     sellButton.remove();

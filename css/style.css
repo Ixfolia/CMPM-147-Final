@@ -19,8 +19,8 @@ h1 {
   flex-grow: 1;
 }
 
-#box-container {
-  width: 200px; /* Adjust as needed */
+/* #box-container {
+  width: 200px;
   margin-right: 20px;
   order: 2
 }
@@ -29,8 +29,8 @@ h1 {
   border: 1px solid #000000;
   padding: 10px;
   margin: 20px;
-  width: 500px; /* Adjust to fit within the box-container width */
-}
+  width: 500px;
+} */
 
 #paragraph-container {
   margin-top: 20px;

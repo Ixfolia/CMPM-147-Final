@@ -34,10 +34,13 @@ let cooldownStartTime = 0;
 
 let obstacles = {};
 
+
+let mainMenu;
+let showText = true;
 let startScreen = true;
 let buildScreen = false;
 let upgradeScreen = false;
-let sellScreen = true;
+let sellScreen = false;
 
 let currentDay = 0; // Initialize day counter
 let lastPhase = false; // Initialize to track the last phase of the cycle
@@ -150,6 +153,8 @@ function preload() {
   idle_right = loadImage("./assets/farmer_movement.png");
 
   harvestedCropsTilesheet = loadImage("./assets/buttons/harvestedCrops.png");
+
+  mainMenu = loadImage("./assets/mainmenu.png");
 }
 
 function setup() {
@@ -283,7 +288,7 @@ function setup() {
       createdBuildingButtons = false;
     }
   });
-
+  
   let inventoryButton = createImg("./assets/buttons/inventoryButton.png", "inventopry Button");
   inventoryButton.position(width - 16 - 4 * 2 - 48 + width/20, height + height/3.5 - 4 + height/3.5);
   inventoryButton.size(48, 48)
@@ -331,14 +336,11 @@ function mouseClicked() {
 
 function draw() {
   if (startScreen) {
-    background(0);
-    fill(255);
-    textSize(48);
-    textAlign(CENTER, CENTER);
-    text("Build", width / 2, height / 3);
-    textSize(24);
-    text("Click to Start", width / 2, height / 2);
+    background(mainMenu);
   } else {
+    setTimeout(() => {
+      showText = false;
+    }, 10000);
     updateGathering();
 
     // Calculate the center of the screen
@@ -636,6 +638,13 @@ function draw() {
     //   text("Gathering...", width / 2, 20);
     //   noFill();
     // }
+
+    if (showText) {
+      fill(0);
+      textAlign(CENTER, TOP);
+      textSize(12);
+      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 35);
+    }
 
     // Display resources UI
     textSize(24);

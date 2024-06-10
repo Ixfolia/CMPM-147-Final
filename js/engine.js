@@ -635,7 +635,7 @@ function draw() {
 
     // Display the player's position at the top-left corner of the screen
     fill(0);
-    text(`(${playerPosition[0]}, ${playerPosition[1]})`, 70, 30);
+    text(`(${playerPosition[0]}, ${(playerPosition[1] * -1)})`, 50, 10);
 
     // gathering text
     if (gathering) {
@@ -662,13 +662,13 @@ function draw() {
     // Display resources UI
     textSize(24);
     inventory = getResourceInfo();
-    text(`x${inventory[0]}`, width - 30, 25);
+    text(`x${inventory[0]}`, width - 30, 15);
     let wood = image(resourceTilesheet, width - 90, 10, 32, 32, 0, 0, 32, 32);
-    text(`x${inventory[1]}`, width - 30, 65);
+    text(`x${inventory[1]}`, width - 30, 55);
     let stone = image(resourceTilesheet, width - 90, 50, 32, 32, 32, 0, 32, 32);
-    text(`x${inventory[2]}`, width - 30, 105);
+    text(`x${inventory[2]}`, width - 30, 95);
     let seed = image(resourceTilesheet, width - 90, 90, 32, 32, 0, 32, 32, 32);
-    text(`$${inventory[11]}`, width - 30, 145);
+    text(`$${inventory[11]}`, width - 30, 135);
 
     noStroke();
     noFill();

@@ -414,6 +414,8 @@ function p3_tileClicked(i, j) {
       }
       startGathering();
       actionTaken = true;
+      interactionText = generateInteraction('stone');
+      interactionTextTimer = interactionTextDuration;
     }
 
     // Check if the clicked tile or any of its adjacent tiles are trees

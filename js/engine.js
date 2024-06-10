@@ -100,6 +100,11 @@ let tomatoButton;
 let sellButton;
 let sellingCrop;
 
+// variables for text gen
+let interactionText = '';
+let interactionTextTimer = 0;
+const interactionTextDuration = 100;
+
 /////////////////////////////
 // Transforms between coordinate systems
 // These are actually slightly weirder than in full 3d...
@@ -340,7 +345,7 @@ function draw() {
   } else {
     setTimeout(() => {
       showText = false;
-    }, 10000);
+    }, 4000);
     updateGathering();
 
     // Calculate the center of the screen
@@ -642,8 +647,17 @@ function draw() {
     if (showText) {
       fill(0);
       textAlign(CENTER, TOP);
+      textSize(14);
+      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, height - 90);
+    }
+
+    if (interactionTextTimer > 0 && !showText) {
+      console.log("Displaying interaction text:", interactionText);
+      fill(0);
+      textAlign(CENTER, TOP);
       textSize(12);
-      text("Your grandpa passed, leaving you his farm. You honor him by farming just as he taught.", width / 2 - 10, 35);
+      text(interactionText, width / 2 - 10, height - 90);
+      interactionTextTimer--;
     }
 
     // Display resources UI
@@ -1575,4 +1589,55 @@ function createSellButtons() {
     tomatoButton.remove();
     createdSellButtons = false;
   });
+}
+
+
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function generateInteraction(material) {
+  const actions = {
+      wood: ["chop down", "gather", "cut", "collect", "stack"],
+      stone: ["mine", "quarry", "extract", "dig up", "gather"],
+      seeds: ["plant", "sow", "scatter", "bury", "spread"]
+  };
+
+  const objects = {
+      wood: ["a tree", "logs", "firewood", "timber", "branches"],
+      stone: ["a boulder", "some rocks", "a slab of granite", "some limestone", "a chunk of marble"],
+      seeds: ["tomato seeds", "corn seeds", "carrot seeds", "lettuce seeds", "pumpkin seeds"]
+  };
+
+  const results = {
+      wood: ["you feel a sense of strength", "you recall grandpa's wisdom", "you remember cozy nights by the fire", "you feel connected to the land", "you are reminded of grandpa's hard work"],
+      stone: ["you feel accomplished", "you recall grandpa's mining tales", "you remember grandpa's patience", "you feel like an explorer", "you feel a sense of discovery"],
+      seeds: ["you feel hopeful for the harvest", "you remember grandpa's planting tips", "you are excited for new growth", "you feel a connection to the earth", "you remember grandpa's garden"]
+  };
+
+  const grandpaMemories = ["Grandpa would be proud.", "You recall grandpa's stories of the farm.", "Memories of grandpa fill your mind.", "You remember grandpa's wise words.", "Grandpa always knew the best spots."];
+
+  let action, object, result;
+
+  switch (material) {
+      case 'wood':
+          action = getRandomElement(actions.wood);
+          object = getRandomElement(objects.wood);
+          result = getRandomElement(results.wood);
+          break;
+      case 'stone':
+          action = getRandomElement(actions.stone);
+          object = getRandomElement(objects.stone);
+          result = getRandomElement(results.stone);
+          break;
+      case 'seeds':
+          action = getRandomElement(actions.seeds);
+          object = getRandomElement(objects.seeds);
+          result = getRandomElement(results.seeds);
+          break;
+      default:
+          return "Invalid material type";
+  }
+
+  return `You ${action} ${object} and ${result}. ${getRandomElement(grandpaMemories)}`;
 }

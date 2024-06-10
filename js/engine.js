@@ -637,12 +637,12 @@ function draw() {
     fill(0);
     text(`(${playerPosition[0]}, ${playerPosition[1]})`, 70, 30);
 
-    // // gathering text
-    // if (gathering) {
-    //   fill(0);
-    //   text("Gathering...", width / 2, 20);
-    //   noFill();
-    // }
+    // gathering text
+    if (gathering) {
+      fill(0);
+      text("Gathering...", width / 2, 20);
+      noFill();
+    }
 
     if (showText) {
       fill(0);
@@ -652,7 +652,6 @@ function draw() {
     }
 
     if (interactionTextTimer > 0 && !showText) {
-      console.log("Displaying interaction text:", interactionText);
       fill(0);
       textAlign(CENTER, TOP);
       textSize(12);
@@ -1598,15 +1597,15 @@ function getRandomElement(array) {
 
 function generateInteraction(material) {
   const actions = {
-      wood: ["chop down", "gather", "cut", "collect", "stack"],
-      stone: ["mine", "quarry", "extract", "dig up", "gather"],
-      seeds: ["plant", "sow", "scatter", "bury", "spread"]
+      wood: ["gather", "chop down", "cut", "collect"],
+      stone: ["gather", "extract", "dig up", "mine"],
+      seeds: ["gather", "collect", "pick up", "accumlate"]
   };
 
   const objects = {
-      wood: ["a tree", "logs", "firewood", "timber", "branches"],
-      stone: ["a boulder", "some rocks", "a slab of granite", "some limestone", "a chunk of marble"],
-      seeds: ["tomato seeds", "corn seeds", "carrot seeds", "lettuce seeds", "pumpkin seeds"]
+      wood: ["a tree", "logs", "wood", "timber", "branches"],
+      stone: ["a boulder", "some rocks", "a few pebbles", "some ore"],
+      seeds: ["seeds", "grains", "plantlings", "sprouts"]
   };
 
   const results = {
@@ -1615,7 +1614,7 @@ function generateInteraction(material) {
       seeds: ["you feel hopeful for the harvest", "you remember grandpa's planting tips", "you are excited for new growth", "you feel a connection to the earth", "you remember grandpa's garden"]
   };
 
-  const grandpaMemories = ["Grandpa would be proud.", "You recall grandpa's stories of the farm.", "Memories of grandpa fill your mind.", "You remember grandpa's wise words.", "Grandpa always knew the best spots."];
+  const ending = ["Grandpa would be proud.", "You recall grandpa's stories of the farm.", "Memories of grandpa fill your mind.", "You remember grandpa's wise words.", "Grandpa always knew the best spots."];
 
   let action, object, result;
 
@@ -1639,5 +1638,5 @@ function generateInteraction(material) {
           return "Invalid material type";
   }
 
-  return `You ${action} ${object} and ${result}. ${getRandomElement(grandpaMemories)}`;
+  return `You ${action} ${object} and ${result}. ${getRandomElement(ending)}`;
 }

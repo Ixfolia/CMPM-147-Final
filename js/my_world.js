@@ -434,6 +434,8 @@ function p3_tileClicked(i, j) {
       }
       startGathering();
       actionTaken = true;
+      interactionText = generateInteraction('wood');
+      interactionTextTimer = interactionTextDuration;
     }
 
     if (playerNextToDeadTree && adjacentTiles.some(tile => deadtreePosition[tile] && tile[0] >= i - 1 && tile[0] <= i && tile[1] >= j - 1 && tile[1] <= j)) {
@@ -451,6 +453,8 @@ function p3_tileClicked(i, j) {
       }
       startGathering();
       actionTaken = true;
+      interactionText = generateInteraction('wood');
+      interactionTextTimer = interactionTextDuration;
     }
 
     // Check if the clicked tile or any of its adjacent tiles are weeds
@@ -462,6 +466,8 @@ function p3_tileClicked(i, j) {
             weeds[[i, j]] = false;
             startGathering();
             actionTaken = true;
+            interactionText = generateInteraction('seeds');
+            interactionTextTimer = interactionTextDuration;
       }
     }
 

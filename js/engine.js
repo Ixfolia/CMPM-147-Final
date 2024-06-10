@@ -47,6 +47,8 @@ let lastPhase = false; // Initialize to track the last phase of the cycle
 
 // let boxes;
 let inventory;
+let checkbox;
+let timeInMinutes = 5;
 
 // variables for states
 let createdBuildButtons = false;
@@ -255,6 +257,10 @@ function setup() {
   // }
 
   // resetAction();
+    // Create a checkbox and position it
+  checkbox = createCheckbox('Speed Up Time (Debug)', false);
+  checkbox.parent("paragraph-container")
+  checkbox.changed(speedUpTime);
 
   let label = createP();
   label.html("World key: ");
@@ -324,10 +330,16 @@ function rebuildWorld(key) {
   tile_rows = Math.ceil(height / tile_height_step_main);
 }
 
-function mouseClicked() {
+function mouseClicked(event) {
+  // Check if the event target is the checkbox or any of its children
+  if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+    return;
+  }
+
   if (startScreen) {
     startScreen = false;
   }
+
   let world_pos = screenToWorld(
     [mouseX, mouseY],
     [camera_offset.x, camera_offset.y]
@@ -770,7 +782,6 @@ function draw() {
     let nightColor = color(0, 0, 0, 168);
     let currentColor;
 
-    let timeInMinutes = 5;
     let cycleTime = timeInMinutes * 60 * 1000;
 
     // parts of the day/night are split into quarters
@@ -871,6 +882,7 @@ function draw() {
     if (!createdBuildButtons){
       createBuildButtons();
     }
+    
   }
 
   // upgrade Screen
@@ -1639,4 +1651,13 @@ function generateInteraction(material) {
   }
 
   return `You ${action} ${object} and ${result}. ${getRandomElement(ending)}`;
+}
+
+function speedUpTime() {
+  // This function will be called whenever the checkbox is checked/unchecked
+  if (this.checked()) {
+    timeInMinutes = .1;
+  } else {
+    timeInMinutes = 5;
+  }
 }
